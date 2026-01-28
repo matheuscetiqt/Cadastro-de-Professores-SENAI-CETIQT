@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cadastro de Professores SENAI CETIQT</title>
+<style>
+    body {
+        font-family: 'Segoe UI', sans-serif;
+        background: linear-gradient(180deg,#dbeafe,#bfdbfe,#e0f2fe);
+        margin: 0;
+        padding: 0;
+    }
+    header {
+        background-color: #1e3a8a;
+        color: white;
+        padding: 20px;
+        text-align: center;
+        font-size: 1.5em;
+        font-weight: bold;
+    }
+    main {
+        padding: 20px;
+        max-width: 800px;
+        margin: auto;
+    }
+    label {
+        display: block;
+        margin-top: 10px;
+        font-weight: bold;
+    }
+    input, select, button {
+        width: 100%;
+        padding: 8px;
+        margin-top: 5px;
+        border-radius: 5px;
+        border: 1px solid #ccc;
+        box-sizing: border-box;
+    }
+    button {
+        background-color: #1e3a8a;
+        color: white;
+        font-weight: bold;
+        margin-top: 15px;
+        cursor: pointer;
+        transition: 0.3s;
+    }
+    button:hover {
+        background-color: #374eb2;
+    }
+    .resultado {
+        margin-top: 20px;
+        padding: 15px;
+        background-color: #f3f4f6;
+        border-radius: 8px;
+    }
+</style>
+</head>
+<body>
+<header>Cadastro de Professores SENAI CETIQT</header>
+<main>
+    <h2>Cadastrar Professor</h2>
+    <label>Nome do Professor:</label>
+    <input type="text" id="nomeProfessor">
+
+    <label>Disciplina:</label>
+    <input type="text" id="disciplina">
+
+    <label>Valor da Aula (R$):</label>
+    <input type="number" id="valorAula" min="0" step="0.01">
+
+    <label>Carga Horária (horas):</label>
+    <input type="number" id="cargaHoraria" min="0" step="1">
+
+    <button onclick="cadastrarProfessor()">Cadastrar</button>
+
+    <h2>Pesquisar Professor</h2>
+    <label>Digite o nome do professor:</label>
+    <input type="text" id="pesquisaNome">
+    <button onclick="pesquisarProfessor()">Pesquisar</button>
+
+    <div class="resultado" id="resultadoPesquisa"></div>
+</main>
+
+<script>
+    // Array para armazenar os professores
+    const professores = [];
+
+    // Função para cadastrar professor
+    function cadastrarProfessor() {
+        const nome = document.getElementById('nomeProfessor').value.trim();
+        const disciplina = document.getElementById('disciplina').value.trim();
+        const valorAula = parseFloat(document.getElementById('valorAula').value);
+        const cargaHoraria = parseInt(document.getElementById('cargaHoraria').value);
+
+        if(!nome || !disciplina || isNaN(valorAula) || isNaN(cargaHoraria)) {
+            alert('Por favor, preencha todos os campos corretamente!');
+            return;
+        }
+
+        // Criar objeto do professor
+        const professor = {
+            nome,
+            disciplina,
+            valorAula,
+            cargaHoraria,
+            valorTotal: valorAula * cargaHoraria
+        };
+
+        // Adicionar ao array
+        professores.push(professor);
+
+        // Limpar campos
+        document.getElementById('nomeProfessor').value = '';
+        document.getElementById('disciplina').value = '';
+        document.getElementById('valorAula').value = '';
+        document.getElementById('cargaHoraria').value = '';
+
+        alert(`Professor ${nome} cadastrado com sucesso!`);
+        console.log(professores); // Para verificar no console
+    }
+
+    // Função para pesquisar professor
+    function pesquisarProfessor() {
+        const pesquisa = document.getElementById('pesquisaNome').value.trim();
+        const resultadoDiv = document.getElementById('resultadoPesquisa');
+
+        if(!pesquisa) {
+            alert('Digite o nome do professor para pesquisar!');
+            return;
+        }
+
+        const professorEncontrado = professores.find(p => p.nome.toLowerCase() === pesquisa.toLowerCase());
+
+        if(professorEncontrado) {
+            resultadoDiv.innerHTML = `
+                <strong>Nome:</strong> ${professorEncontrado.nome}<br>
+                <strong>Disciplina:</strong> ${professorEncontrado.disciplina}<br>
+                <strong>Valor da Aula:</strong> R$ ${professorEncontrado.valorAula.toFixed(2)}<br>
+                <strong>Carga Horária:</strong> ${professorEncontrado.cargaHoraria} horas<br>
+                <strong>Valor Total:</strong> R$ ${professorEncontrado.valorTotal.toFixed(2)}
+            `;
+        } else {
+            resultadoDiv.innerHTML = `Professor ainda não cadastrado.`;
+        }
+    }
+</script>
+</body>
+</html>
