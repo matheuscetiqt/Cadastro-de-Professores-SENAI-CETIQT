@@ -108,9 +108,11 @@
 
     <button onclick="cadastrarOuAtualizarProfessor()">Cadastrar / Atualizar</button>
 
-    <h2>Pesquisar Professor</h2>
-    <label>Digite o nome do professor:</label>
+    <h2>Pesquisar</h2>
+    <label>Pesquisar por Nome do Professor:</label>
     <input type="text" id="pesquisaNome">
+    <label>Pesquisar por Disciplina:</label>
+    <input type="text" id="pesquisaDisciplina">
     <button onclick="pesquisarProfessor()">Pesquisar</button>
 
     <div class="resultado" id="resultadoPesquisa"></div>
@@ -184,26 +186,27 @@
     }
 
     function pesquisarProfessor() {
-        const pesquisa = document.getElementById('pesquisaNome').value.trim();
+        const nomePesquisa = document.getElementById('pesquisaNome').value.trim().toLowerCase();
+        const disciplinaPesquisa = document.getElementById('pesquisaDisciplina').value.trim().toLowerCase();
         const resultadoDiv = document.getElementById('resultadoPesquisa');
 
-        if(!pesquisa) {
-            alert('Digite o nome do professor para pesquisar!');
-            return;
-        }
+        let resultados = professores.filter(p => {
+            let nomeMatch = nomePesquisa ? p.nome.toLowerCase().includes(nomePesquisa) : true;
+            let disciplinaMatch = disciplinaPesquisa ? p.disciplina.toLowerCase().includes(disciplinaPesquisa) : true;
+            return nomeMatch && disciplinaMatch;
+        });
 
-        const professorEncontrado = professores.find(p => p.nome.toLowerCase() === pesquisa.toLowerCase());
-
-        if(professorEncontrado) {
-            resultadoDiv.innerHTML = `
-                <strong>Nome:</strong> ${professorEncontrado.nome}<br>
-                <strong>Disciplina:</strong> ${professorEncontrado.disciplina}<br>
-                <strong>Valor da Aula:</strong> R$ ${professorEncontrado.valorAula.toFixed(2)}<br>
-                <strong>Carga Horária:</strong> ${professorEncontrado.cargaHoraria} horas<br>
-                <strong>Valor Total:</strong> R$ ${professorEncontrado.valorTotal.toFixed(2)}
-            `;
+        if(resultados.length === 0) {
+            resultadoDiv.innerHTML = 'Nenhum professor encontrado.';
         } else {
-            resultadoDiv.innerHTML = 'Professor ainda não cadastrado.';
+            resultadoDiv.innerHTML = resultados.map(p => `
+                <strong>Nome:</strong> ${p.nome}<br>
+                <strong>Disciplina:</strong> ${p.disciplina}<br>
+                <strong>Valor da Aula:</strong> R$ ${p.valorAula.toFixed(2)}<br>
+                <strong>Carga Horária:</strong> ${p.cargaHoraria} horas<br>
+                <strong>Valor Total:</strong> R$ ${p.valorTotal.toFixed(2)}<br>
+                <hr>
+            `).join('');
         }
     }
 
@@ -250,6 +253,7 @@
         document.getElementById('valorAula').value = '';
         document.getElementById('cargaHoraria').value = '';
         document.getElementById('pesquisaNome').value = '';
+        document.getElementById('pesquisaDisciplina').value = '';
         document.getElementById('resultadoPesquisa').innerHTML = '';
     }
 </script>
