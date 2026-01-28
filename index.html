@@ -135,7 +135,20 @@
 
 <script>
     let professores = [];
-    let editIndex = -1; // controla se estamos editando
+    let editIndex = -1;
+
+    // Carrega os professores salvos no localStorage
+    window.onload = function() {
+        const dados = localStorage.getItem('professores');
+        if(dados) {
+            professores = JSON.parse(dados);
+            atualizarTabela();
+        }
+    }
+
+    function salvarLocalStorage() {
+        localStorage.setItem('professores', JSON.stringify(professores));
+    }
 
     function cadastrarOuAtualizarProfessor() {
         const nome = document.getElementById('nomeProfessor').value.trim();
@@ -165,6 +178,7 @@
             alert('Professor cadastrado com sucesso!');
         }
 
+        salvarLocalStorage();
         limparCampos();
         atualizarTabela();
     }
@@ -225,6 +239,7 @@
     function excluirProfessor(index) {
         if(confirm('Tem certeza que deseja excluir este professor?')) {
             professores.splice(index, 1);
+            salvarLocalStorage();
             atualizarTabela();
         }
     }
