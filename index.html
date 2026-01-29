@@ -29,7 +29,7 @@
     }
     h2 { color: #1e3a8a; }
     label { display: block; margin-top: 10px; font-weight: bold; }
-    input, select, textarea, button {
+    input, select, button {
         width: 100%;
         padding: 8px;
         margin-top: 5px;
@@ -80,12 +80,33 @@
         background-color: #f3f4f6;
         border-radius: 8px;
     }
+    .referencia {
+        background:#f3f4f6;
+        padding:15px;
+        border-radius:8px;
+        margin-bottom:20px;
+        font-size:0.95em;
+    }
 </style>
 </head>
 <body>
 <header>Gestão de Professores - SENAI CETIQT</header>
 <main>
     <h2>Cadastro de Professor</h2>
+
+    <!-- 🔹 BLOCO DE REFERÊNCIA VISUAL (NÃO SALVA) -->
+    <div class="referencia">
+        <strong>Referência para Solicitação de Compras</strong><br><br>
+        <strong>Centro de Custo / Curso:</strong><br>
+        • 3101040212 - Pós graduação<br>
+        • 30304011105 - Curso SEPRO (Segurança de Processos)<br><br>
+
+        <strong>Produto / Tipo de Atividade:</strong><br>
+        • 100021663 - Ministrar aula<br>
+        • 100022010 - Desenvolvimento de conteúdo<br>
+        • 100021664 - Tutoria
+    </div>
+
     <label>Nome do Professor:</label>
     <input type="text" id="nomeProfessor">
 
@@ -97,9 +118,6 @@
 
     <label>Carga Horária (horas):</label>
     <input type="number" id="cargaHoraria" min="0" step="1">
-
-    <label>Observação:</label>
-    <textarea id="observacao" rows="3" placeholder="Ex: Centro de custo, curso, produto, solicitação de compra..."></textarea>
 
     <button onclick="cadastrarOuAtualizarProfessor()">Cadastrar / Atualizar</button>
 
@@ -121,7 +139,6 @@
                 <th>Valor Aula</th>
                 <th>Carga Horária</th>
                 <th>Valor Total</th>
-                <th>Observação</th>
                 <th>Ações</th>
             </tr>
         </thead>
@@ -150,7 +167,6 @@ function cadastrarOuAtualizarProfessor() {
     const disciplina = document.getElementById('disciplina').value.trim();
     const valorAula = parseFloat(document.getElementById('valorAula').value);
     const cargaHoraria = parseInt(document.getElementById('cargaHoraria').value);
-    const observacao = document.getElementById('observacao').value.trim();
 
     if(!nome || !disciplina || isNaN(valorAula) || isNaN(cargaHoraria)) {
         alert('Preencha todos os campos corretamente!');
@@ -162,8 +178,7 @@ function cadastrarOuAtualizarProfessor() {
         disciplina,
         valorAula,
         cargaHoraria,
-        valorTotal: valorAula * cargaHoraria,
-        observacao
+        valorTotal: valorAula * cargaHoraria
     };
 
     if(editIndex >= 0) {
@@ -200,7 +215,6 @@ function pesquisarProfessor() {
             <strong>Valor da Aula:</strong> R$ ${p.valorAula.toFixed(2)}<br>
             <strong>Carga Horária:</strong> ${p.cargaHoraria} horas<br>
             <strong>Valor Total:</strong> R$ ${p.valorTotal.toFixed(2)}<br>
-            <strong>Observação:</strong> ${p.observacao || ''}<br>
             <hr>
         `).join('');
     }
@@ -217,7 +231,6 @@ function atualizarTabela() {
             <td>R$ ${prof.valorAula.toFixed(2)}</td>
             <td>${prof.cargaHoraria}</td>
             <td>R$ ${prof.valorTotal.toFixed(2)}</td>
-            <td>${prof.observacao || ''}</td>
             <td>
                 <button class="action-btn edit-btn" onclick="editarProfessor(${index})">Editar</button>
                 <button class="action-btn delete-btn" onclick="excluirProfessor(${index})">Excluir</button>
@@ -233,7 +246,6 @@ function editarProfessor(index) {
     document.getElementById('disciplina').value = prof.disciplina;
     document.getElementById('valorAula').value = prof.valorAula;
     document.getElementById('cargaHoraria').value = prof.cargaHoraria;
-    document.getElementById('observacao').value = prof.observacao || '';
     editIndex = index;
 }
 
@@ -250,7 +262,6 @@ function limparCampos() {
     document.getElementById('disciplina').value = '';
     document.getElementById('valorAula').value = '';
     document.getElementById('cargaHoraria').value = '';
-    document.getElementById('observacao').value = '';
     document.getElementById('pesquisaNome').value = '';
     document.getElementById('pesquisaDisciplina').value = '';
     document.getElementById('resultadoPesquisa').innerHTML = '';
