@@ -7,135 +7,146 @@
 
 <style>
 body{font-family:Arial;background:#eef2f7;padding:20px}
-h2{background:#1e3a8a;color:white;padding:10px;border-radius:6px}
+h1{color:#1e3a8a}
 .box{background:white;padding:15px;border-radius:8px;margin-bottom:20px;box-shadow:0 2px 6px rgba(0,0,0,0.1)}
+h2{margin-top:0;color:#1e3a8a}
 input,select,button{padding:8px;margin:5px 0;width:100%;border-radius:6px;border:1px solid #ccc}
 button{background:#2563eb;color:white;border:none;cursor:pointer}
 button:hover{background:#1d4ed8}
-.resultado{background:#f1f5f9;padding:10px;border-radius:6px;margin-top:10px}
-.disc-prof{background:#f8fafc;padding:8px;border-radius:6px;margin-top:5px}
+.resultado{background:#f1f5f9;padding:10px;border-radius:6px;margin-top:10px;font-size:16px}
 </style>
 </head>
 <body>
 
 <h1>🎓 Gestão Acadêmica</h1>
 
-<!-- CADASTRO DISCIPLINA -->
+<!-- CADASTRAR PROFESSOR -->
+<div class="box">
+<h2>Cadastrar Professor</h2>
+<input type="text" id="profNome" placeholder="Nome do Professor">
+<input type="number" id="profValor" placeholder="Valor por hora (R$)">
+<button onclick="cadastrarProfessor()">Salvar Professor</button>
+</div>
+
+<!-- CADASTRAR DISCIPLINA -->
 <div class="box">
 <h2>Cadastrar Disciplina</h2>
-<input type="text" id="disciplinaNome" placeholder="Nome da Disciplina">
-<input type="number" id="disciplinaCarga" placeholder="Carga Horária">
+<input type="text" id="discNome" placeholder="Nome da Disciplina">
+<input type="number" id="discCarga" placeholder="Carga Horária">
 <button onclick="cadastrarDisciplina()">Salvar Disciplina</button>
 </div>
 
-<!-- CADASTRO PROFESSOR -->
+<!-- VINCULAR PROFESSOR ÀS DISCIPLINAS -->
 <div class="box">
-<h2>Cadastrar Professor</h2>
-<input type="text" id="professorNome" placeholder="Nome do Professor">
-
-<label>Selecione as disciplinas e informe o valor por disciplina:</label>
-<div id="disciplinasProfessor"></div>
-
-<button onclick="cadastrarProfessor()">Salvar Professor</button>
+<h2>Vincular Disciplinas ao Professor</h2>
+<select id="vincProf" onchange="listarDisciplinasCheckbox()"></select>
+<div id="listaCheckbox"></div>
+<button onclick="salvarVinculo()">Salvar Vínculo</button>
 </div>
 
 <!-- CONSULTA -->
 <div class="box">
 <h2>Consulta</h2>
-<select id="consultaProfessor" onchange="carregarDisciplinasProfessor()">
+<select id="consultaProf" onchange="carregarDisciplinasProfessor()">
 <option value="">Selecione o professor</option>
 </select>
 
-<select id="consultaDisciplina" onchange="mostrarDetalhes()">
+<select id="consultaDisc" onchange="calcularValor()">
 <option value="">Selecione a disciplina</option>
 </select>
 
-<div id="infoDisciplina" class="resultado"></div>
+<div id="resultado" class="resultado"></div>
 </div>
 
 <script>
-let disciplinas = JSON.parse(localStorage.getItem("disciplinas")) || [];
 let professores = JSON.parse(localStorage.getItem("professores")) || [];
+let disciplinas = JSON.parse(localStorage.getItem("disciplinas")) || [];
 
-function salvar(){ 
-    localStorage.setItem("disciplinas", JSON.stringify(disciplinas));
+function salvar(){
     localStorage.setItem("professores", JSON.stringify(professores));
-}
-
-function cadastrarDisciplina(){
-    const nome = disciplinaNome.value;
-    const carga = disciplinaCarga.value;
-    disciplinas.push({nome,carga});
-    salvar();
-    montarDisciplinasProfessor();
-    alert("Disciplina cadastrada!");
-}
-
-function montarDisciplinasProfessor(){
-    const div = document.getElementById("disciplinasProfessor");
-    div.innerHTML = "";
-    disciplinas.forEach((d,i)=>{
-        div.innerHTML += `
-        <div class="disc-prof">
-            <input type="checkbox" id="disc${i}"> ${d.nome}
-            <input type="number" id="valor${i}" placeholder="Valor R$ para esta disciplina">
-        </div>`;
-    });
+    localStorage.setItem("disciplinas", JSON.stringify(disciplinas));
 }
 
 function cadastrarProfessor(){
-    const nome = professorNome.value;
-    let discDoProf = [];
-
-    disciplinas.forEach((d,i)=>{
-        if(document.getElementById("disc"+i).checked){
-            const valor = document.getElementById("valor"+i).value;
-            discDoProf.push({disciplinaIndex:i, valor});
-        }
+    professores.push({
+        nome: profNome.value,
+        valorHora: parseFloat(profValor.value),
+        disciplinas: []
     });
-
-    professores.push({nome, disciplinas:discDoProf});
     salvar();
-    atualizarProfessores();
+    atualizarSelects();
     alert("Professor cadastrado!");
 }
 
-function atualizarProfessores(){
-    const sel = consultaProfessor;
-    sel.innerHTML = '<option value="">Selecione o professor</option>';
-    professores.forEach((p,i)=>{
-        sel.innerHTML += `<option value="${i}">${p.nome}</option>`;
+function cadastrarDisciplina(){
+    disciplinas.push({
+        nome: discNome.value,
+        carga: parseFloat(discCarga.value)
     });
+    salvar();
+    alert("Disciplina cadastrada!");
+}
+
+function atualizarSelects(){
+    vincProf.innerHTML = "";
+    consultaProf.innerHTML = '<option value="">Selecione o professor</option>';
+    professores.forEach((p,i)=>{
+        vincProf.innerHTML += `<option value="${i}">${p.nome}</option>`;
+        consultaProf.innerHTML += `<option value="${i}">${p.nome}</option>`;
+    });
+}
+
+function listarDisciplinasCheckbox(){
+    const pIndex = vincProf.value;
+    if(pIndex==="") return;
+
+    listaCheckbox.innerHTML = "";
+    disciplinas.forEach((d,i)=>{
+        listaCheckbox.innerHTML += `
+            <label>
+                <input type="checkbox" value="${i}"> ${d.nome} (${d.carga}h)
+            </label><br>`;
+    });
+}
+
+function salvarVinculo(){
+    const pIndex = vincProf.value;
+    const marcadas = Array.from(listaCheckbox.querySelectorAll("input:checked")).map(c=>parseInt(c.value));
+    professores[pIndex].disciplinas = marcadas;
+    salvar();
+    alert("Vínculo salvo!");
 }
 
 function carregarDisciplinasProfessor(){
-    const pIndex = consultaProfessor.value;
-    const selDisc = consultaDisciplina;
-    selDisc.innerHTML = '<option value="">Selecione a disciplina</option>';
+    const pIndex = consultaProf.value;
+    consultaDisc.innerHTML = '<option value="">Selecione a disciplina</option>';
     if(pIndex==="") return;
 
-    professores[pIndex].disciplinas.forEach((d,i)=>{
-        selDisc.innerHTML += `<option value="${i}">${disciplinas[d.disciplinaIndex].nome}</option>`;
+    professores[pIndex].disciplinas.forEach(dIndex=>{
+        const d = disciplinas[dIndex];
+        consultaDisc.innerHTML += `<option value="${dIndex}">${d.nome}</option>`;
     });
 }
 
-function mostrarDetalhes(){
-    const pIndex = consultaProfessor.value;
-    const dIndex = consultaDisciplina.value;
+function calcularValor(){
+    const pIndex = consultaProf.value;
+    const dIndex = consultaDisc.value;
     if(pIndex===""||dIndex==="") return;
 
-    const profDisc = professores[pIndex].disciplinas[dIndex];
-    const disciplina = disciplinas[profDisc.disciplinaIndex];
+    const professor = professores[pIndex];
+    const disciplina = disciplinas[dIndex];
+    const total = professor.valorHora * disciplina.carga;
 
-    infoDisciplina.innerHTML = `
-    <strong>Disciplina:</strong> ${disciplina.nome}<br>
-    <strong>Carga Horária:</strong> ${disciplina.carga}h<br>
-    <strong>Valor do Professor:</strong> R$ ${profDisc.valor}
+    resultado.innerHTML = `
+        👨‍🏫 <strong>Professor:</strong> ${professor.nome}<br>
+        📘 <strong>Disciplina:</strong> ${disciplina.nome}<br>
+        ⏳ <strong>Carga Horária:</strong> ${disciplina.carga}h<br>
+        💵 <strong>Valor por Hora:</strong> R$ ${professor.valorHora}<br><br>
+        💰 <strong>VALOR TOTAL:</strong> <span style="font-size:20px;color:#16a34a">R$ ${total}</span>
     `;
 }
 
-montarDisciplinasProfessor();
-atualizarProfessores();
+atualizarSelects();
 </script>
 
 </body>
