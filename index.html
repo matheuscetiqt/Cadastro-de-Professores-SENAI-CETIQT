@@ -27,15 +27,9 @@
         border-radius: 10px;
         box-shadow: 0 4px 12px rgba(0,0,0,0.1);
     }
-    h2 {
-        color: #1e3a8a;
-    }
-    label {
-        display: block;
-        margin-top: 10px;
-        font-weight: bold;
-    }
-    input, select, button {
+    h2 { color: #1e3a8a; }
+    label { display: block; margin-top: 10px; font-weight: bold; }
+    input, select, textarea, button {
         width: 100%;
         padding: 8px;
         margin-top: 5px;
@@ -52,9 +46,7 @@
         cursor: pointer;
         transition: 0.3s;
     }
-    button:hover {
-        background-color: #374eb2;
-    }
+    button:hover { background-color: #374eb2; }
     table {
         width: 100%;
         border-collapse: collapse;
@@ -106,6 +98,9 @@
     <label>Carga Horária (horas):</label>
     <input type="number" id="cargaHoraria" min="0" step="1">
 
+    <label>Observação:</label>
+    <textarea id="observacao" rows="3" placeholder="Ex: Centro de custo, curso, produto, solicitação de compra..."></textarea>
+
     <button onclick="cadastrarOuAtualizarProfessor()">Cadastrar / Atualizar</button>
 
     <h2>Pesquisar</h2>
@@ -126,136 +121,140 @@
                 <th>Valor Aula</th>
                 <th>Carga Horária</th>
                 <th>Valor Total</th>
+                <th>Observação</th>
                 <th>Ações</th>
             </tr>
         </thead>
-        <tbody>
-            <!-- Professores cadastrados aparecerão aqui -->
-        </tbody>
+        <tbody></tbody>
     </table>
 </main>
 
 <script>
-    let professores = [];
-    let editIndex = -1;
+let professores = [];
+let editIndex = -1;
 
-    // Carrega os professores salvos no localStorage
-    window.onload = function() {
-        const dados = localStorage.getItem('professores');
-        if(dados) {
-            professores = JSON.parse(dados);
-            atualizarTabela();
-        }
-    }
-
-    function salvarLocalStorage() {
-        localStorage.setItem('professores', JSON.stringify(professores));
-    }
-
-    function cadastrarOuAtualizarProfessor() {
-        const nome = document.getElementById('nomeProfessor').value.trim();
-        const disciplina = document.getElementById('disciplina').value.trim();
-        const valorAula = parseFloat(document.getElementById('valorAula').value);
-        const cargaHoraria = parseInt(document.getElementById('cargaHoraria').value);
-
-        if(!nome || !disciplina || isNaN(valorAula) || isNaN(cargaHoraria)) {
-            alert('Preencha todos os campos corretamente!');
-            return;
-        }
-
-        const professor = {
-            nome,
-            disciplina,
-            valorAula,
-            cargaHoraria,
-            valorTotal: valorAula * cargaHoraria
-        };
-
-        if(editIndex >= 0) {
-            professores[editIndex] = professor;
-            editIndex = -1;
-            alert('Cadastro atualizado com sucesso!');
-        } else {
-            professores.push(professor);
-            alert('Professor cadastrado com sucesso!');
-        }
-
-        salvarLocalStorage();
-        limparCampos();
+window.onload = function() {
+    const dados = localStorage.getItem('professores');
+    if(dados) {
+        professores = JSON.parse(dados);
         atualizarTabela();
     }
+}
 
-    function pesquisarProfessor() {
-        const nomePesquisa = document.getElementById('pesquisaNome').value.trim().toLowerCase();
-        const disciplinaPesquisa = document.getElementById('pesquisaDisciplina').value.trim().toLowerCase();
-        const resultadoDiv = document.getElementById('resultadoPesquisa');
+function salvarLocalStorage() {
+    localStorage.setItem('professores', JSON.stringify(professores));
+}
 
-        let resultados = professores.filter(p => {
-            let nomeMatch = nomePesquisa ? p.nome.toLowerCase().includes(nomePesquisa) : true;
-            let disciplinaMatch = disciplinaPesquisa ? p.disciplina.toLowerCase().includes(disciplinaPesquisa) : true;
-            return nomeMatch && disciplinaMatch;
-        });
+function cadastrarOuAtualizarProfessor() {
+    const nome = document.getElementById('nomeProfessor').value.trim();
+    const disciplina = document.getElementById('disciplina').value.trim();
+    const valorAula = parseFloat(document.getElementById('valorAula').value);
+    const cargaHoraria = parseInt(document.getElementById('cargaHoraria').value);
+    const observacao = document.getElementById('observacao').value.trim();
 
-        if(resultados.length === 0) {
-            resultadoDiv.innerHTML = 'Nenhum professor encontrado.';
-        } else {
-            resultadoDiv.innerHTML = resultados.map(p => `
-                <strong>Nome:</strong> ${p.nome}<br>
-                <strong>Disciplina:</strong> ${p.disciplina}<br>
-                <strong>Valor da Aula:</strong> R$ ${p.valorAula.toFixed(2)}<br>
-                <strong>Carga Horária:</strong> ${p.cargaHoraria} horas<br>
-                <strong>Valor Total:</strong> R$ ${p.valorTotal.toFixed(2)}<br>
-                <hr>
-            `).join('');
-        }
+    if(!nome || !disciplina || isNaN(valorAula) || isNaN(cargaHoraria)) {
+        alert('Preencha todos os campos corretamente!');
+        return;
     }
 
-    function atualizarTabela() {
-        const tbody = document.querySelector('#tabelaProfessores tbody');
-        tbody.innerHTML = '';
-        professores.forEach((prof, index) => {
-            const tr = document.createElement('tr');
-            tr.innerHTML = `
-                <td>${prof.nome}</td>
-                <td>${prof.disciplina}</td>
-                <td>R$ ${prof.valorAula.toFixed(2)}</td>
-                <td>${prof.cargaHoraria}</td>
-                <td>R$ ${prof.valorTotal.toFixed(2)}</td>
-                <td>
-                    <button class="action-btn edit-btn" onclick="editarProfessor(${index})">Editar</button>
-                    <button class="action-btn delete-btn" onclick="excluirProfessor(${index})">Excluir</button>
-                </td>
-            `;
-            tbody.appendChild(tr);
-        });
+    const professor = {
+        nome,
+        disciplina,
+        valorAula,
+        cargaHoraria,
+        valorTotal: valorAula * cargaHoraria,
+        observacao
+    };
+
+    if(editIndex >= 0) {
+        professores[editIndex] = professor;
+        editIndex = -1;
+        alert('Cadastro atualizado com sucesso!');
+    } else {
+        professores.push(professor);
+        alert('Professor cadastrado com sucesso!');
     }
 
-    function editarProfessor(index) {
-        const prof = professores[index];
-        document.getElementById('nomeProfessor').value = prof.nome;
-        document.getElementById('disciplina').value = prof.disciplina;
-        document.getElementById('valorAula').value = prof.valorAula;
-        document.getElementById('cargaHoraria').value = prof.cargaHoraria;
-        editIndex = index;
-    }
+    salvarLocalStorage();
+    limparCampos();
+    atualizarTabela();
+}
 
-    function excluirProfessor(index) {
-        if(confirm('Tem certeza que deseja excluir este professor?')) {
-            professores.splice(index, 1);
-            salvarLocalStorage();
-            atualizarTabela();
-        }
-    }
+function pesquisarProfessor() {
+    const nomePesquisa = document.getElementById('pesquisaNome').value.trim().toLowerCase();
+    const disciplinaPesquisa = document.getElementById('pesquisaDisciplina').value.trim().toLowerCase();
+    const resultadoDiv = document.getElementById('resultadoPesquisa');
 
-    function limparCampos() {
-        document.getElementById('nomeProfessor').value = '';
-        document.getElementById('disciplina').value = '';
-        document.getElementById('valorAula').value = '';
-        document.getElementById('cargaHoraria').value = '';
-        document.getElementById('pesquisaNome').value = '';
-        document.getElementById('pesquisaDisciplina').value = '';
-        document.getElementById('resultadoPesquisa').innerHTML = '';
+    let resultados = professores.filter(p => {
+        let nomeMatch = nomePesquisa ? p.nome.toLowerCase().includes(nomePesquisa) : true;
+        let disciplinaMatch = disciplinaPesquisa ? p.disciplina.toLowerCase().includes(disciplinaPesquisa) : true;
+        return nomeMatch && disciplinaMatch;
+    });
+
+    if(resultados.length === 0) {
+        resultadoDiv.innerHTML = 'Nenhum professor encontrado.';
+    } else {
+        resultadoDiv.innerHTML = resultados.map(p => `
+            <strong>Nome:</strong> ${p.nome}<br>
+            <strong>Disciplina:</strong> ${p.disciplina}<br>
+            <strong>Valor da Aula:</strong> R$ ${p.valorAula.toFixed(2)}<br>
+            <strong>Carga Horária:</strong> ${p.cargaHoraria} horas<br>
+            <strong>Valor Total:</strong> R$ ${p.valorTotal.toFixed(2)}<br>
+            <strong>Observação:</strong> ${p.observacao || ''}<br>
+            <hr>
+        `).join('');
     }
+}
+
+function atualizarTabela() {
+    const tbody = document.querySelector('#tabelaProfessores tbody');
+    tbody.innerHTML = '';
+    professores.forEach((prof, index) => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+            <td>${prof.nome}</td>
+            <td>${prof.disciplina}</td>
+            <td>R$ ${prof.valorAula.toFixed(2)}</td>
+            <td>${prof.cargaHoraria}</td>
+            <td>R$ ${prof.valorTotal.toFixed(2)}</td>
+            <td>${prof.observacao || ''}</td>
+            <td>
+                <button class="action-btn edit-btn" onclick="editarProfessor(${index})">Editar</button>
+                <button class="action-btn delete-btn" onclick="excluirProfessor(${index})">Excluir</button>
+            </td>
+        `;
+        tbody.appendChild(tr);
+    });
+}
+
+function editarProfessor(index) {
+    const prof = professores[index];
+    document.getElementById('nomeProfessor').value = prof.nome;
+    document.getElementById('disciplina').value = prof.disciplina;
+    document.getElementById('valorAula').value = prof.valorAula;
+    document.getElementById('cargaHoraria').value = prof.cargaHoraria;
+    document.getElementById('observacao').value = prof.observacao || '';
+    editIndex = index;
+}
+
+function excluirProfessor(index) {
+    if(confirm('Tem certeza que deseja excluir este professor?')) {
+        professores.splice(index, 1);
+        salvarLocalStorage();
+        atualizarTabela();
+    }
+}
+
+function limparCampos() {
+    document.getElementById('nomeProfessor').value = '';
+    document.getElementById('disciplina').value = '';
+    document.getElementById('valorAula').value = '';
+    document.getElementById('cargaHoraria').value = '';
+    document.getElementById('observacao').value = '';
+    document.getElementById('pesquisaNome').value = '';
+    document.getElementById('pesquisaDisciplina').value = '';
+    document.getElementById('resultadoPesquisa').innerHTML = '';
+}
 </script>
 </body>
 </html>
