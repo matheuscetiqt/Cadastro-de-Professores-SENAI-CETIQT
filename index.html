@@ -3,151 +3,279 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Gestão de Professores</title>
+<title>Gestão de Professores - SENAI CETIQT</title>
 
 <style>
-body{font-family:Arial;background:#eef2f7;padding:20px}
-h1{color:#1e3a8a}
-.box{background:white;padding:15px;border-radius:8px;margin-bottom:20px;box-shadow:0 2px 6px rgba(0,0,0,0.1)}
-h2{margin-top:0;color:#1e3a8a}
-input,select,button{padding:8px;margin:5px 0;width:100%;border-radius:6px;border:1px solid #ccc}
-button{background:#2563eb;color:white;border:none;cursor:pointer}
-button:hover{background:#1d4ed8}
-.resultado{background:#f1f5f9;padding:10px;border-radius:6px;margin-top:10px;font-size:16px}
+body {
+    font-family: 'Segoe UI', sans-serif;
+    background-color: #f5f5f5;
+    margin: 0;
+    padding: 0;
+}
+header {
+    background-color: #1e3a8a;
+    color: white;
+    padding: 20px;
+    text-align: center;
+    font-size: 1.6em;
+    font-weight: bold;
+}
+main {
+    max-width: 900px;
+    margin: 30px auto;
+    background-color: white;
+    padding: 25px;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+h2 { color: #1e3a8a; margin-top:30px; }
+label { display: block; margin-top: 10px; font-weight: bold; }
+
+input, select, button {
+    width: 100%;
+    padding: 8px;
+    margin-top: 5px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    box-sizing: border-box;
+    font-size: 1em;
+}
+
+button {
+    background-color: #1e3a8a;
+    color: white;
+    font-weight: bold;
+    margin-top: 15px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+button:hover { background-color: #374eb2; }
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+th, td {
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+}
+th {
+    background-color: #1e3a8a;
+    color: white;
+}
+
+.action-btn {
+    padding: 5px 10px;
+    margin-right: 5px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    color: white;
+    font-size: 0.9em;
+}
+.edit-btn { background-color: #f59e0b; }
+.delete-btn { background-color: #ef4444; }
+
+.resultado {
+    margin-top: 15px;
+    padding: 10px;
+    background-color: #f3f4f6;
+    border-radius: 8px;
+}
+
+/* 🔹 BLOCO DE OBSERVAÇÃO */
+.obs-box{
+    margin-top:25px;
+    padding:15px;
+    background:#eef2ff;
+    border-left:6px solid #1e3a8a;
+    border-radius:8px;
+}
+.obs-box h3{
+    margin-top:0;
+    color:#1e3a8a;
+}
+.obs-item{
+    margin-bottom:8px;
+}
 </style>
 </head>
+
 <body>
+<header>Gestão de Professores - SENAI CETIQT</header>
 
-<h1>🎓 Gestão Acadêmica</h1>
+<main>
 
-<!-- CADASTRAR PROFESSOR -->
-<div class="box">
-<h2>Cadastrar Professor</h2>
-<input type="text" id="profNome" placeholder="Nome do Professor">
-<input type="number" id="profValor" placeholder="Valor por hora (R$)">
-<button onclick="cadastrarProfessor()">Salvar Professor</button>
+<h2>Cadastro de Professor</h2>
+<label>Nome do Professor:</label>
+<input type="text" id="nomeProfessor">
+
+<label>Disciplina:</label>
+<input type="text" id="disciplina">
+
+<label>Valor da Aula (R$):</label>
+<input type="number" id="valorAula" min="0" step="0.01">
+
+<label>Carga Horária (horas):</label>
+<input type="number" id="cargaHoraria" min="0" step="1">
+
+<button onclick="cadastrarOuAtualizarProfessor()">Cadastrar / Atualizar</button>
+
+
+<!-- 🔵 OBSERVAÇÃO VISUAL -->
+<div class="obs-box">
+<h3>📌 Informações para Solicitação de Compras</h3>
+
+<div class="obs-item"><strong>Centro de Custo:</strong> 3101040212 - Pós graduação</div>
+
+<div class="obs-item">
+<strong>CR (Curso):</strong><br>
+30304011105 - Curso SEPRO (Segurança de Processos)
 </div>
 
-<!-- CADASTRAR DISCIPLINA -->
-<div class="box">
-<h2>Cadastrar Disciplina</h2>
-<input type="text" id="discNome" placeholder="Nome da Disciplina">
-<input type="number" id="discCarga" placeholder="Carga Horária">
-<button onclick="cadastrarDisciplina()">Salvar Disciplina</button>
+<div class="obs-item">
+<strong>Produto:</strong><br>
+100021663 - Ministrar aula<br>
+100022010 - Desenvolvimento de conteúdo<br>
+100021664 - Tutoria
+</div>
 </div>
 
-<!-- VINCULAR PROFESSOR ÀS DISCIPLINAS -->
-<div class="box">
-<h2>Vincular Disciplinas ao Professor</h2>
-<select id="vincProf" onchange="listarDisciplinasCheckbox()"></select>
-<div id="listaCheckbox"></div>
-<button onclick="salvarVinculo()">Salvar Vínculo</button>
-</div>
 
-<!-- CONSULTA -->
-<div class="box">
-<h2>Consulta</h2>
-<select id="consultaProf" onchange="carregarDisciplinasProfessor()">
-<option value="">Selecione o professor</option>
-</select>
+<h2>Pesquisar</h2>
+<label>Pesquisar por Nome do Professor:</label>
+<input type="text" id="pesquisaNome">
 
-<select id="consultaDisc" onchange="calcularValor()">
-<option value="">Selecione a disciplina</option>
-</select>
+<label>Pesquisar por Disciplina:</label>
+<input type="text" id="pesquisaDisciplina">
 
-<div id="resultado" class="resultado"></div>
-</div>
+<button onclick="pesquisarProfessor()">Pesquisar</button>
+<div class="resultado" id="resultadoPesquisa"></div>
+
+
+<h2>Base de Professores</h2>
+<table id="tabelaProfessores">
+<thead>
+<tr>
+<th>Nome</th>
+<th>Disciplina</th>
+<th>Valor Aula</th>
+<th>Carga Horária</th>
+<th>Valor Total</th>
+<th>Ações</th>
+</tr>
+</thead>
+<tbody></tbody>
+</table>
+
+</main>
 
 <script>
-let professores = JSON.parse(localStorage.getItem("professores")) || [];
-let disciplinas = JSON.parse(localStorage.getItem("disciplinas")) || [];
+let professores = [];
+let editIndex = -1;
 
-function salvar(){
-    localStorage.setItem("professores", JSON.stringify(professores));
-    localStorage.setItem("disciplinas", JSON.stringify(disciplinas));
+window.onload = function() {
+    const dados = localStorage.getItem('professores');
+    if(dados) {
+        professores = JSON.parse(dados);
+        atualizarTabela();
+    }
 }
 
-function cadastrarProfessor(){
-    professores.push({
-        nome: profNome.value,
-        valorHora: parseFloat(profValor.value),
-        disciplinas: []
+function salvarLocalStorage() {
+    localStorage.setItem('professores', JSON.stringify(professores));
+}
+
+function cadastrarOuAtualizarProfessor() {
+    const nome = nomeProfessor.value.trim();
+    const disciplina = document.getElementById('disciplina').value.trim();
+    const valorAula = parseFloat(valorAulaInput.value);
+    const cargaHoraria = parseInt(cargaHorariaInput.value);
+
+    if(!nome || !disciplina || isNaN(valorAula) || isNaN(cargaHoraria)) {
+        alert('Preencha todos os campos corretamente!');
+        return;
+    }
+
+    const professor = { nome, disciplina, valorAula, cargaHoraria, valorTotal: valorAula * cargaHoraria };
+
+    if(editIndex >= 0) {
+        professores[editIndex] = professor;
+        editIndex = -1;
+    } else {
+        professores.push(professor);
+    }
+
+    salvarLocalStorage();
+    limparCampos();
+    atualizarTabela();
+}
+
+function pesquisarProfessor() {
+    const nomePesquisa = pesquisaNome.value.toLowerCase();
+    const disciplinaPesquisa = pesquisaDisciplina.value.toLowerCase();
+    const resultadoDiv = resultadoPesquisa;
+
+    let resultados = professores.filter(p =>
+        p.nome.toLowerCase().includes(nomePesquisa) &&
+        p.disciplina.toLowerCase().includes(disciplinaPesquisa)
+    );
+
+    resultadoDiv.innerHTML = resultados.length === 0
+        ? 'Nenhum professor encontrado.'
+        : resultados.map(p => `
+            <strong>Nome:</strong> ${p.nome}<br>
+            <strong>Disciplina:</strong> ${p.disciplina}<br>
+            <strong>Valor Aula:</strong> R$ ${p.valorAula.toFixed(2)}<br>
+            <strong>Carga Horária:</strong> ${p.cargaHoraria}h<br>
+            <strong>Total:</strong> R$ ${p.valorTotal.toFixed(2)}<hr>
+        `).join('');
+}
+
+function atualizarTabela() {
+    const tbody = document.querySelector('#tabelaProfessores tbody');
+    tbody.innerHTML = '';
+
+    professores.forEach((prof, index) => {
+        tbody.innerHTML += `
+        <tr>
+            <td>${prof.nome}</td>
+            <td>${prof.disciplina}</td>
+            <td>R$ ${prof.valorAula.toFixed(2)}</td>
+            <td>${prof.cargaHoraria}</td>
+            <td>R$ ${prof.valorTotal.toFixed(2)}</td>
+            <td>
+                <button class="action-btn edit-btn" onclick="editarProfessor(${index})">Editar</button>
+                <button class="action-btn delete-btn" onclick="excluirProfessor(${index})">Excluir</button>
+            </td>
+        </tr>`;
     });
-    salvar();
-    atualizarSelects();
-    alert("Professor cadastrado!");
 }
 
-function cadastrarDisciplina(){
-    disciplinas.push({
-        nome: discNome.value,
-        carga: parseFloat(discCarga.value)
-    });
-    salvar();
-    alert("Disciplina cadastrada!");
+function editarProfessor(index) {
+    const prof = professores[index];
+    nomeProfessor.value = prof.nome;
+    disciplina.value = prof.disciplina;
+    valorAula.value = prof.valorAula;
+    cargaHoraria.value = prof.cargaHoraria;
+    editIndex = index;
 }
 
-function atualizarSelects(){
-    vincProf.innerHTML = "";
-    consultaProf.innerHTML = '<option value="">Selecione o professor</option>';
-    professores.forEach((p,i)=>{
-        vincProf.innerHTML += `<option value="${i}">${p.nome}</option>`;
-        consultaProf.innerHTML += `<option value="${i}">${p.nome}</option>`;
-    });
+function excluirProfessor(index) {
+    if(confirm('Excluir professor?')) {
+        professores.splice(index,1);
+        salvarLocalStorage();
+        atualizarTabela();
+    }
 }
 
-function listarDisciplinasCheckbox(){
-    const pIndex = vincProf.value;
-    if(pIndex==="") return;
-
-    listaCheckbox.innerHTML = "";
-    disciplinas.forEach((d,i)=>{
-        listaCheckbox.innerHTML += `
-            <label>
-                <input type="checkbox" value="${i}"> ${d.nome} (${d.carga}h)
-            </label><br>`;
-    });
+function limparCampos() {
+    nomeProfessor.value = '';
+    disciplina.value = '';
+    valorAula.value = '';
+    cargaHoraria.value = '';
 }
-
-function salvarVinculo(){
-    const pIndex = vincProf.value;
-    const marcadas = Array.from(listaCheckbox.querySelectorAll("input:checked")).map(c=>parseInt(c.value));
-    professores[pIndex].disciplinas = marcadas;
-    salvar();
-    alert("Vínculo salvo!");
-}
-
-function carregarDisciplinasProfessor(){
-    const pIndex = consultaProf.value;
-    consultaDisc.innerHTML = '<option value="">Selecione a disciplina</option>';
-    if(pIndex==="") return;
-
-    professores[pIndex].disciplinas.forEach(dIndex=>{
-        const d = disciplinas[dIndex];
-        consultaDisc.innerHTML += `<option value="${dIndex}">${d.nome}</option>`;
-    });
-}
-
-function calcularValor(){
-    const pIndex = consultaProf.value;
-    const dIndex = consultaDisc.value;
-    if(pIndex===""||dIndex==="") return;
-
-    const professor = professores[pIndex];
-    const disciplina = disciplinas[dIndex];
-    const total = professor.valorHora * disciplina.carga;
-
-    resultado.innerHTML = `
-        👨‍🏫 <strong>Professor:</strong> ${professor.nome}<br>
-        📘 <strong>Disciplina:</strong> ${disciplina.nome}<br>
-        ⏳ <strong>Carga Horária:</strong> ${disciplina.carga}h<br>
-        💵 <strong>Valor por Hora:</strong> R$ ${professor.valorHora}<br><br>
-        💰 <strong>VALOR TOTAL:</strong> <span style="font-size:20px;color:#16a34a">R$ ${total}</span>
-    `;
-}
-
-atualizarSelects();
 </script>
-
 </body>
 </html>
