@@ -3,13 +3,16 @@
 <head>
 <meta charset="UTF-8">
 <title>Gestão de Professores</title>
+
 <style>
 body {
   font-family: Arial, sans-serif;
   background: #f4f6f8;
   padding: 20px;
 }
-h1 { text-align: center; }
+h1 {
+  text-align: center;
+}
 .card {
   background: #fff;
   padding: 15px;
@@ -18,7 +21,7 @@ h1 { text-align: center; }
 }
 input, button {
   padding: 8px;
-  margin: 5px 0;
+  margin-top: 5px;
   width: 100%;
 }
 button {
@@ -27,14 +30,16 @@ button {
   border: none;
   cursor: pointer;
 }
-button:hover { background: #0056b3; }
+button:hover {
+  background: #0056b3;
+}
 table {
   width: 100%;
   border-collapse: collapse;
 }
 th, td {
-  padding: 8px;
   border: 1px solid #ccc;
+  padding: 8px;
   text-align: center;
 }
 .actions button {
@@ -48,33 +53,28 @@ th, td {
 <h1>Gestão de Professores</h1>
 
 <div class="card">
-<h3>Cadastrar Professor</h3>
-<input id="nome" placeholder="Nome do professor">
-<input id="disciplinas" placeholder="Disciplinas (separadas por vírgula)">
-<input id="valorHora" type="number" placeholder="Valor da hora/aula">
-<button onclick="salvarProfessor()">Salvar</button>
+  <h3>Cadastrar / Editar Professor</h3>
+  <input id="nome" placeholder="Nome do professor">
+  <input id="disciplina" placeholder="Disciplina">
+  <input id="valorHora" type="number" placeholder="Valor da hora/aula">
+  <button onclick="salvarProfessor()">Salvar</button>
 </div>
 
 <div class="card">
-<h3>Pesquisar</h3>
-<input id="pesquisa" placeholder="Nome ou disciplina" onkeyup="listarProfessores()">
-</div>
-
-<div class="card">
-<h3>Professores Cadastrados</h3>
-<table>
-<thead>
-<tr>
-<th>Nome</th>
-<th>Disciplinas</th>
-<th>Valor Hora</th>
-<th>Carga Horária</th>
-<th>Total</th>
-<th>Ações</th>
-</tr>
-</thead>
-<tbody id="tabela"></tbody>
-</table>
+  <h3>Professores Cadastrados</h3>
+  <table>
+    <thead>
+      <tr>
+        <th>Nome</th>
+        <th>Disciplina</th>
+        <th>Valor Hora</th>
+        <th>Carga Horária</th>
+        <th>Total</th>
+        <th>Ações</th>
+      </tr>
+    </thead>
+    <tbody id="tabela"></tbody>
+  </table>
 </div>
 
 <script>
@@ -82,13 +82,16 @@ let professores = JSON.parse(localStorage.getItem("professores")) || [];
 let editIndex = null;
 
 function salvarProfessor() {
-  const nome = document.getElementById("nome").value;
-  const disciplinas = document.getElementById("disciplinas").value.split(",");
+  const nome = document.getElementById("nome").value.trim();
+  const disciplina = document.getElementById("disciplina").value.trim();
   const valorHora = parseFloat(document.getElementById("valorHora").value);
 
-  if (!nome || !disciplinas || !valorHora) return alert("Preencha todos os campos");
+  if (!nome || !disciplina || isNaN(valorHora)) {
+    alert("Preencha todos os campos corretamente.");
+    return;
+  }
 
-  const professor = { nome, disciplinas, valorHora };
+  const professor = { nome, disciplina, valorHora };
 
   if (editIndex !== null) {
     professores[editIndex] = professor;
@@ -103,47 +106,45 @@ function salvarProfessor() {
 }
 
 function listarProfessores() {
-  const filtro = document.getElementById("pesquisa").value.toLowerCase();
   const tabela = document.getElementById("tabela");
   tabela.innerHTML = "";
 
   professores.forEach((p, i) => {
-    if (
-      p.nome.toLowerCase().includes(filtro) ||
-      p.disciplinas.join(",").toLowerCase().includes(filtro)
-    ) {
-      tabela.innerHTML += `
-        <tr>
-          <td>${p.nome}</td>
-          <td>${p.disciplinas.join(", ")}</td>
-          <td>R$ ${p.valorHora.toFixed(2)}</td>
-          <td>
-            <input type="number" id="ch${i}" placeholder="Horas">
-          </td>
-          <td>
-            <button onclick="calcular(${i})">Calcular</button>
-            <span id="total${i}"></span>
-          </td>
-          <td class="actions">
-            <button onclick="editar(${i})">Editar</button>
-            <button onclick="excluir(${i})" style="background:red">Excluir</button>
-          </td>
-        </tr>
-      `;
-    }
+    tabela.innerHTML += `
+      <tr>
+        <td>${p.nome}</td>
+        <td>${p.disciplina}</td>
+        <td>R$ ${p.valorHora.toFixed(2)}</td>
+        <td>
+          <input type="number" id="horas${i}" placeholder="Horas">
+        </td>
+        <td>
+          <button onclick="calcular(${i})">Calcular</button>
+          <div id="total${i}"></div>
+        </td>
+        <td class="actions">
+          <button onclick="editar(${i})">Editar</button>
+          <button onclick="excluir(${i})" style="background:red">Excluir</button>
+        </td>
+      </tr>
+    `;
   });
 }
 
 function calcular(i) {
-  const horas = document.getElementById(`ch${i}`).value;
-  if (!horas) return alert("Informe a carga horária");
+  const horas = document.getElementById(`horas${i}`).value;
+  if (!horas) {
+    alert("Informe a carga horária.");
+    return;
+  }
   const total = horas * professores[i].valorHora;
-  document.getElementById(`total${i}`).innerText = `R$ ${total.toFixed(2)}`;
+  document.getElementById(`total${i}`).innerText =
+    `R$ ${total.toFixed(2)}`;
 }
 
 function editar(i) {
   document.getElementById("nome").value = professores[i].nome;
-  document.getElementById("disciplinas").value = professores[i].disciplinas.join(",");
+  document.getElementById("disciplina").value = professores[i].disciplina;
   document.getElementById("valorHora").value = professores[i].valorHora;
   editIndex = i;
 }
@@ -158,7 +159,7 @@ function excluir(i) {
 
 function limparCampos() {
   document.getElementById("nome").value = "";
-  document.getElementById("disciplinas").value = "";
+  document.getElementById("disciplina").value = "";
   document.getElementById("valorHora").value = "";
 }
 
