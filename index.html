@@ -2,53 +2,39 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<title>Sistema Inteligente de Professores</title>
+<title>Sistema de Professores</title>
 <style>
-body { font-family: Arial; background:#f5f5f5; margin:0; padding:20px; }
-h2 { color:#1e3a8a; margin-top:30px; }
-.box { background:white; padding:20px; border-radius:10px; margin-bottom:20px; box-shadow:0 4px 10px rgba(0,0,0,0.1); }
-input, select, button {
-    width:100%; padding:8px; margin-top:8px;
-    border-radius:5px; border:1px solid #ccc;
-}
-button {
-    background:#1e3a8a; color:white; font-weight:bold;
-    cursor:pointer; margin-top:10px;
-}
-.resultado {
-    background:#eef2ff; padding:15px; margin-top:15px;
-    border-left:5px solid #1e3a8a;
-}
+body { font-family: Arial; background:#f5f5f5; padding:20px; }
+.box { background:white; padding:20px; border-radius:10px; margin-bottom:20px; box-shadow:0 4px 10px rgba(0,0,0,0.1);}
+input, select, button { width:100%; padding:8px; margin-top:8px; border-radius:5px; border:1px solid #ccc; }
+button { background:#1e3a8a; color:white; font-weight:bold; cursor:pointer; }
+.resultado { background:#eef2ff; padding:15px; margin-top:15px; border-left:5px solid #1e3a8a;}
+h2 { color:#1e3a8a; }
 </style>
 </head>
-
 <body>
 
-<h1>Sistema Inteligente de Cálculo de Professores</h1>
+<h1>Sistema Inteligente de Professores</h1>
 
 <div class="box">
-<h2>👨‍🏫 Cadastro de Professor</h2>
+<h2>Cadastro de Professor + Disciplina</h2>
 <input type="text" id="profNome" placeholder="Nome do Professor">
-<input type="number" id="profValor" placeholder="Valor da hora aula">
-<button onclick="cadastrarProfessor()">Cadastrar Professor</button>
-</div>
+<input type="number" id="profValor" placeholder="Valor da Hora Aula">
 
-<div class="box">
-<h2>📚 Cadastro de Disciplina</h2>
+<hr>
+
+<h3>Adicionar Disciplina ao Professor</h3>
 <input type="text" id="discNome" placeholder="Nome da Disciplina">
-<input type="number" id="discCarga" placeholder="Carga Horária">
-<button onclick="cadastrarDisciplina()">Cadastrar Disciplina</button>
+<input type="number" id="discCarga" placeholder="Carga Horária da Disciplina">
+<button onclick="adicionarDisciplinaTemp()">Adicionar Disciplina</button>
+
+<ul id="listaDisciplinasTemp"></ul>
+
+<button onclick="salvarProfessor()">Salvar Professor</button>
 </div>
 
 <div class="box">
-<h2>🔗 Relacionar Professor à Disciplina</h2>
-<select id="relProf"></select>
-<select id="relDisc"></select>
-<button onclick="relacionar()">Salvar Relação</button>
-</div>
-
-<div class="box">
-<h2>🔍 Pesquisa Inteligente</h2>
+<h2>Pesquisa Inteligente</h2>
 <label>Professor:</label>
 <select id="pesquisaProfessor" onchange="carregarDisciplinasProfessor()"></select>
 
@@ -59,94 +45,74 @@ button {
 </div>
 
 <script>
-let professores = [];
-let disciplinas = [];
-let relacoes = [];
+let professores = JSON.parse(localStorage.getItem("professores")) || [];
+let disciplinasTemp = [];
 
-window.onload = function () {
-    professores = JSON.parse(localStorage.getItem('professores')) || [];
-    disciplinas = JSON.parse(localStorage.getItem('disciplinas')) || [];
-    relacoes = JSON.parse(localStorage.getItem('relacoes')) || [];
-    atualizarSelects();
-};
+window.onload = atualizarSelectProfessores;
 
-function salvarTudo() {
-    localStorage.setItem('professores', JSON.stringify(professores));
-    localStorage.setItem('disciplinas', JSON.stringify(disciplinas));
-    localStorage.setItem('relacoes', JSON.stringify(relacoes));
+function salvarStorage() {
+    localStorage.setItem("professores", JSON.stringify(professores));
 }
 
-function atualizarSelects() {
-    const relProf = document.getElementById("relProf");
-    const relDisc = document.getElementById("relDisc");
-    const pesquisaProfessor = document.getElementById("pesquisaProfessor");
-
-    relProf.innerHTML = pesquisaProfessor.innerHTML = "<option value=''>Selecione Professor</option>";
-    relDisc.innerHTML = "<option value=''>Selecione Disciplina</option>";
-
-    professores.forEach(p => {
-        relProf.innerHTML += `<option value="${p.nome}">${p.nome}</option>`;
-        pesquisaProfessor.innerHTML += `<option value="${p.nome}">${p.nome}</option>`;
-    });
-
-    disciplinas.forEach(d => {
-        relDisc.innerHTML += `<option value="${d.nome}">${d.nome}</option>`;
-    });
-}
-
-function cadastrarProfessor() {
-    const nome = profNome.value;
-    const valorHora = parseFloat(profValor.value);
-    if (!nome || isNaN(valorHora)) return alert("Preencha corretamente!");
-    professores.push({ nome, valorHora });
-    salvarTudo();
-    atualizarSelects();
-    profNome.value = profValor.value = "";
-}
-
-function cadastrarDisciplina() {
+function adicionarDisciplinaTemp() {
     const nome = discNome.value;
     const carga = parseInt(discCarga.value);
-    if (!nome || isNaN(carga)) return alert("Preencha corretamente!");
-    disciplinas.push({ nome, carga });
-    salvarTudo();
-    atualizarSelects();
+    if(!nome || isNaN(carga)) return alert("Preencha disciplina corretamente!");
+
+    disciplinasTemp.push({ nome, carga });
+    listaDisciplinasTemp.innerHTML += `<li>${nome} - ${carga}h</li>`;
     discNome.value = discCarga.value = "";
 }
 
-function relacionar() {
-    const prof = relProf.value;
-    const disc = relDisc.value;
-    if (!prof || !disc) return alert("Selecione os dois!");
-    relacoes.push({ professor: prof, disciplina: disc });
-    salvarTudo();
-    alert("Relação salva!");
+function salvarProfessor() {
+    const nome = profNome.value;
+    const valorHora = parseFloat(profValor.value);
+
+    if(!nome || isNaN(valorHora) || disciplinasTemp.length === 0)
+        return alert("Preencha tudo!");
+
+    professores.push({ nome, valorHora, disciplinas: disciplinasTemp });
+    salvarStorage();
+    atualizarSelectProfessores();
+
+    profNome.value = profValor.value = "";
+    listaDisciplinasTemp.innerHTML = "";
+    disciplinasTemp = [];
+}
+
+function atualizarSelectProfessores() {
+    pesquisaProfessor.innerHTML = "<option value=''>Selecione</option>";
+    professores.forEach((p,i) => {
+        pesquisaProfessor.innerHTML += `<option value="${i}">${p.nome}</option>`;
+    });
 }
 
 function carregarDisciplinasProfessor() {
-    const profNome = pesquisaProfessor.value;
-    const selectDisc = pesquisaDisciplina;
-    selectDisc.innerHTML = "<option value=''>Selecione</option>";
+    const index = pesquisaProfessor.value;
+    const prof = professores[index];
+    pesquisaDisciplina.innerHTML = "<option value=''>Selecione</option>";
 
-    relacoes.filter(r => r.professor === profNome)
-        .forEach(r => selectDisc.innerHTML += `<option value="${r.disciplina}">${r.disciplina}</option>`);
+    if(!prof) return;
+
+    prof.disciplinas.forEach((d,i) => {
+        pesquisaDisciplina.innerHTML += `<option value="${i}">${d.nome}</option>`;
+    });
 }
 
 function calcularValor() {
-    const profNome = pesquisaProfessor.value;
-    const discNome = pesquisaDisciplina.value;
+    const pIndex = pesquisaProfessor.value;
+    const dIndex = pesquisaDisciplina.value;
 
-    const professor = professores.find(p => p.nome === profNome);
-    const disciplina = disciplinas.find(d => d.nome === discNome);
-    if (!professor || !disciplina) return;
+    const prof = professores[pIndex];
+    const disc = prof.disciplinas[dIndex];
 
-    const total = professor.valorHora * disciplina.carga;
+    const total = prof.valorHora * disc.carga;
 
     resultadoFinal.innerHTML = `
-        <strong>Professor:</strong> ${profNome}<br>
-        <strong>Disciplina:</strong> ${discNome}<br>
-        <strong>Valor Hora:</strong> R$ ${professor.valorHora.toFixed(2)}<br>
-        <strong>Carga Horária:</strong> ${disciplina.carga}h<br>
+        <strong>Professor:</strong> ${prof.nome}<br>
+        <strong>Disciplina:</strong> ${disc.nome}<br>
+        <strong>Valor Hora:</strong> R$ ${prof.valorHora.toFixed(2)}<br>
+        <strong>Carga Horária:</strong> ${disc.carga}h<br>
         <h3>💰 Valor Total: R$ ${total.toFixed(2)}</h3>
     `;
 }
