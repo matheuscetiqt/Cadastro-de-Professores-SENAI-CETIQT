@@ -1,169 +1,112 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-br">
 <head>
-<meta charset="UTF-8">
-<title>Gestão de Professores</title>
-
-<style>
-body {
-  font-family: Arial, sans-serif;
-  background: #f4f6f8;
-  padding: 20px;
-}
-h1 {
-  text-align: center;
-}
-.card {
-  background: #fff;
-  padding: 15px;
-  border-radius: 8px;
-  margin-bottom: 20px;
-}
-input, button {
-  padding: 8px;
-  margin-top: 5px;
-  width: 100%;
-}
-button {
-  background: #007bff;
-  color: white;
-  border: none;
-  cursor: pointer;
-}
-button:hover {
-  background: #0056b3;
-}
-table {
-  width: 100%;
-  border-collapse: collapse;
-}
-th, td {
-  border: 1px solid #ccc;
-  padding: 8px;
-  text-align: center;
-}
-.actions button {
-  margin: 2px;
-}
-</style>
+  <meta charset="UTF-8" />
+  <title>Cronograma de Curso</title>
+  <style>
+    body { font-family: Arial, sans-serif; background:#f4f6f9; padding:20px; }
+    h1 { text-align:center; }
+    .box { background:white; padding:20px; border-radius:10px; box-shadow:0 0 10px #ccc; }
+    input, button { padding:8px; margin:5px 0; }
+    table { width:100%; border-collapse:collapse; margin-top:20px; }
+    th, td { border:1px solid #ccc; padding:8px; text-align:center; }
+    th { background:#2c3e50; color:white; }
+  </style>
 </head>
-
 <body>
 
-<h1>Gestão de Professores</h1>
+  <h1>📚 Gerador de Cronograma de Curso</h1>
 
-<div class="card">
-  <h3>Cadastrar / Editar Professor</h3>
-  <input id="nome" placeholder="Nome do professor">
-  <input id="disciplina" placeholder="Disciplina">
-  <input id="valorHora" type="number" placeholder="Valor da hora/aula">
-  <button onclick="salvarProfessor()">Salvar</button>
-</div>
+  <div class="box">
+    <label>Data de início:</label><br>
+    <input type="date" id="dataInicio"><br>
 
-<div class="card">
-  <h3>Professores Cadastrados</h3>
-  <table>
-    <thead>
-      <tr>
-        <th>Nome</th>
-        <th>Disciplina</th>
-        <th>Valor Hora</th>
-        <th>Carga Horária</th>
-        <th>Total</th>
-        <th>Ações</th>
-      </tr>
-    </thead>
-    <tbody id="tabela"></tbody>
-  </table>
-</div>
+    <label>Horas por semana:</label><br>
+    <input type="number" id="horasSemanais" value="8"><br>
+
+    <button onclick="gerarCronograma()">Gerar Cronograma</button>
+
+    <table id="tabela">
+      <thead>
+        <tr>
+          <th>Disciplina</th>
+          <th>Carga Horária</th>
+          <th>Semanas</th>
+          <th>Início</th>
+          <th>Término</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </div>
 
 <script>
-let professores = JSON.parse(localStorage.getItem("professores")) || [];
-let editIndex = null;
+const disciplinas = [
+  ["Ambientação", 2],
+  ["Desenvolvimento inteligente de produto", 18],
+  ["Produção 4.0", 16],
+  ["Aplicações com Inteligência Artificial", 16],
+  ["Arduíno e Robótica", 24],
+  ["IOE em processos produtivos", 24],
+  ["Fuzzy logic with engineering applications", 24],
+  ["Aprendizagem Baseada em Projetos I", 12],
+  ["Ferramentas Lean", 20],
+  ["Otimização e melhoria de processos", 20],
+  ["Programação da produção (PCP)", 16],
+  ["Modelagem e simulação de processos", 20],
+  ["SCM - Supply Chain Management", 16],
+  ["Aprendizagem Baseada em Projetos II", 12],
+  ["Análise de dados estatísticos", 24],
+  ["Business Intelligence e Analytics", 20],
+  ["VTE orçamentária", 20],
+  ["Law Tech (Direito e a Tecnologia)", 20],
+  ["Revenue management (gestão de oferta)", 20],
+  ["Aprendizagem Baseada em Projetos III", 12],
+  ["Projeto Final", 4],
+];
 
-function salvarProfessor() {
-  const nome = document.getElementById("nome").value.trim();
-  const disciplina = document.getElementById("disciplina").value.trim();
-  const valorHora = parseFloat(document.getElementById("valorHora").value);
+function formatarData(data) {
+  return data.toLocaleDateString('pt-BR');
+}
 
-  if (!nome || !disciplina || isNaN(valorHora)) {
-    alert("Preencha todos os campos corretamente.");
+function gerarCronograma() {
+  const horasSemanais = parseFloat(document.getElementById("horasSemanais").value);
+  const dataInicioInput = document.getElementById("dataInicio").value;
+
+  if (!dataInicioInput) {
+    alert("Escolha a data de início!");
     return;
   }
 
-  const professor = { nome, disciplina, valorHora };
+  let dataAtual = new Date(dataInicioInput);
+  const tbody = document.querySelector("#tabela tbody");
+  tbody.innerHTML = "";
 
-  if (editIndex !== null) {
-    professores[editIndex] = professor;
-    editIndex = null;
-  } else {
-    professores.push(professor);
-  }
+  disciplinas.forEach(disc => {
+    const nome = disc[0];
+    const carga = disc[1];
 
-  localStorage.setItem("professores", JSON.stringify(professores));
-  limparCampos();
-  listarProfessores();
-}
+    const semanas = carga / horasSemanais;
+    const dias = semanas * 7;
 
-function listarProfessores() {
-  const tabela = document.getElementById("tabela");
-  tabela.innerHTML = "";
+    const inicio = new Date(dataAtual);
+    const fim = new Date(dataAtual);
+    fim.setDate(fim.getDate() + dias);
 
-  professores.forEach((p, i) => {
-    tabela.innerHTML += `
+    const linha = `
       <tr>
-        <td>${p.nome}</td>
-        <td>${p.disciplina}</td>
-        <td>R$ ${p.valorHora.toFixed(2)}</td>
-        <td>
-          <input type="number" id="horas${i}" placeholder="Horas">
-        </td>
-        <td>
-          <button onclick="calcular(${i})">Calcular</button>
-          <div id="total${i}"></div>
-        </td>
-        <td class="actions">
-          <button onclick="editar(${i})">Editar</button>
-          <button onclick="excluir(${i})" style="background:red">Excluir</button>
-        </td>
+        <td>${nome}</td>
+        <td>${carga}h</td>
+        <td>${semanas.toFixed(2)}</td>
+        <td>${formatarData(inicio)}</td>
+        <td>${formatarData(fim)}</td>
       </tr>
     `;
+    tbody.innerHTML += linha;
+
+    dataAtual = fim;
   });
 }
-
-function calcular(i) {
-  const horas = document.getElementById(`horas${i}`).value;
-  if (!horas) {
-    alert("Informe a carga horária.");
-    return;
-  }
-  const total = horas * professores[i].valorHora;
-  document.getElementById(`total${i}`).innerText =
-    `R$ ${total.toFixed(2)}`;
-}
-
-function editar(i) {
-  document.getElementById("nome").value = professores[i].nome;
-  document.getElementById("disciplina").value = professores[i].disciplina;
-  document.getElementById("valorHora").value = professores[i].valorHora;
-  editIndex = i;
-}
-
-function excluir(i) {
-  if (confirm("Deseja excluir este professor?")) {
-    professores.splice(i, 1);
-    localStorage.setItem("professores", JSON.stringify(professores));
-    listarProfessores();
-  }
-}
-
-function limparCampos() {
-  document.getElementById("nome").value = "";
-  document.getElementById("disciplina").value = "";
-  document.getElementById("valorHora").value = "";
-}
-
-listarProfessores();
 </script>
 
 </body>
