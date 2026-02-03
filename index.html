@@ -24,7 +24,6 @@
   th { background: #003366; color: white; padding: 12px; }
   td { padding: 10px; border-bottom: 1px solid #ddd; }
   tr:nth-child(even) { background: #f9fbfd; }
-  .total-row { background:#003366; color:white; font-weight:600; }
 </style>
 </head>
 
@@ -73,27 +72,27 @@
 
 <script>
 const disciplinas = [
-  ["Ambientação", "Prof. Jose Marcelo Palma", 2, 2, 0],
+  ["Ambientação", "Prof. Jose Marcelo  Palma", 2, 2, 0],
   ["Desenvolvimento inteligente de produto", "Sérgio Baltar", 18, 8, 10],
   ["Produção 4.0", "Prof. Luis Moura", 16, 8, 8],
   ["Arduíno e Robótica", "Prof. Vinicius Aguiar", 20, 8, 12],
   ["Aplicações com Inteligência Artificial", "Prof. Luis Moura", 24, 8, 16],
   ["IOE em processos produtivos", "Prof. Luis Moura", 24, 8, 16],
   ["Fuzzy logic with engineering applications", "Prof. Carlos Navarro", 24, 8, 16],
-  ["Aprendizagem Baseada em Projetos I", "Prof. Jose Marcelo Palma", 8, 8, 0],
+  ["Aprendizagem Baseada em Projetos I", "Prof. Jose Marcelo  Palma", 8, 8, 0],
   ["Ferramentas Lean", "Prof. Aluisio Monteiro", 20, 8, 12],
   ["Otimização e melhoria de processos", "Prof. Aluisio Monteiro", 20, 8, 12],
-  ["Modelagem e simulação de processos", "Prof. Raphael Costa", 20, 8, 12],
-  ["Programação da produção (PCP)", "Prof. Aluisio Monteiro", 18, 8, 10],
+  ["Modelagem e simulação de processos", "Prof. Raphael Costa ", 20, 8, 12],
+  ["Programação da produção (PCP)", "Prof. Aluisio Monteiro ", 18, 8, 10],
   ["SCM - Supply Chain Management", "Prof. Manuel Lemos", 18, 8, 10],
-  ["Aprendizagem Baseada em Projetos II", "Prof. Jose Marcelo Palma", 8, 8, 0],
+  ["Aprendizagem Baseada em Projetos II", "Prof. Jose Marcelo  Palma", 8, 8, 0],
   ["Análise de dados estatísticos", "Prof. Raphael Costa", 24, 8, 16],
   ["Business Intelligence e Analytics", "Prof. Walner Passos", 20, 8, 12],
   ["VTE orçamentária", "Prof. Frederyck Teixeira", 20, 8, 12],
   ["Law Tech (Direito e a Tecnologia)", "Prof. Diogo Mello", 20, 8, 12],
   ["Revenue management", "Prof. Luis Moura", 20, 8, 12],
-  ["Aprendizagem Baseada em Projetos III", "Prof. Jose Marcelo Palma", 8, 8, 0],
-  ["Projeto Final", "Prof. Jose Marcelo Palma", 8, 0, 8],
+  ["Aprendizagem Baseada em Projetos III", "Prof. Jose Marcelo  Palma", 8, 8, 0],
+  ["Projeto Final", "Prof. Jose Marcelo  Palma", 8, 0, 8],
 ];
 
 function formatarData(data) {
@@ -112,11 +111,8 @@ function gerarCronograma() {
   let dataAtual = new Date(dataInicioInput);
   const tbody = document.querySelector("#tabela tbody");
   tbody.innerHTML = "";
-  let cargaTotalCurso = 0;
 
   disciplinas.forEach(disc => {
-    cargaTotalCurso += disc[2];
-
     const diasDuracao = Math.ceil((disc[2] / horasSemanais) * 7);
     const inicio = new Date(dataAtual);
     const fim = new Date(dataAtual);
@@ -135,14 +131,6 @@ function gerarCronograma() {
 
     dataAtual = fim;
   });
-
-  tbody.innerHTML += `
-    <tr class="total-row">
-      <td colspan="2">TOTAL DO CURSO</td>
-      <td>${cargaTotalCurso}h</td>
-      <td colspan="3"></td>
-    </tr>
-  `;
 }
 
 function limparTabela() {
