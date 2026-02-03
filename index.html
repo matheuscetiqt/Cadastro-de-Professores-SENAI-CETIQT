@@ -17,15 +17,13 @@
   label { font-weight: 600; font-size: 14px; }
   input { width: 100%; padding: 10px; margin: 8px 0 15px; border-radius: 6px; border: 1px solid #ccc; font-size: 14px; }
   .botoes { display: flex; gap: 10px; }
-  button { flex: 1; background: #ff6600; color: white; border: none; padding: 12px; font-weight: 600; border-radius: 6px; cursor: pointer; transition: 0.3s; }
+  button { flex: 1; background: #ff6600; color: white; border: none; padding: 12px; font-weight: 600; border-radius: 6px; cursor: pointer; }
   button:hover { background: #e65c00; }
   .btn-limpar { background: #7f8c8d; }
-  .btn-limpar:hover { background: #636e72; }
   table { width: 100%; border-collapse: collapse; margin-top: 25px; font-size: 14px; }
   th { background: #003366; color: white; padding: 12px; }
   td { padding: 10px; border-bottom: 1px solid #ddd; }
   tr:nth-child(even) { background: #f9fbfd; }
-  footer { text-align: center; margin-top: 40px; font-size: 13px; color: #555; }
 </style>
 </head>
 
@@ -54,8 +52,9 @@
       <thead>
         <tr>
           <th>Disciplina</th>
+          <th>Professor</th>
           <th>Carga Horária</th>
-          <th>Período proporcional (dias)</th>
+          <th>Período (dias)</th>
           <th>Início</th>
           <th>Término</th>
         </tr>
@@ -66,34 +65,34 @@
   </div>
 </div>
 
-<footer>
+<footer style="text-align:center;margin-top:40px;font-size:13px;color:#555;">
   Sistema de Planejamento Acadêmico • SENAI CETIQT <br>
   Desenvolvido por <strong>Matheus Damica Rodrigues Conceição</strong>
 </footer>
 
 <script>
 const disciplinas = [
-  ["Ambientação", 2, 1, 1],
-  ["Desenvolvimento inteligente de produto", 18, 10, 8],
-  ["Produção 4.0", 16, 8, 8],
-  ["Aplicações com Inteligência Artificial", 16, 10, 6],
-  ["Arduíno e Robótica", 24, 16, 8],
-  ["IOE em processos produtivos", 24, 12, 12],
-  ["Fuzzy logic with engineering applications", 24, 12, 12],
-  ["Aprendizagem Baseada em Projetos I", 12, 6, 6],
-  ["Ferramentas Lean", 20, 10, 10],
-  ["Otimização e melhoria de processos", 20, 10, 10],
-  ["Programação da produção (PCP)", 16, 8, 8],
-  ["Modelagem e simulação de processos", 20, 10, 10],
-  ["SCM - Supply Chain Management", 16, 8, 8],
-  ["Aprendizagem Baseada em Projetos II", 12, 6, 6],
-  ["Análise de dados estatísticos", 24, 12, 12],
-  ["Business Intelligence e Analytics", 20, 10, 10],
-  ["VTE orçamentária", 20, 10, 10],
-  ["Law Tech (Direito e a Tecnologia)", 20, 10, 10],
-  ["Revenue management (gestão de oferta)", 20, 10, 10],
-  ["Aprendizagem Baseada em Projetos III", 12, 6, 6],
-  ["Projeto Final", 4, 2, 2],
+  ["Ambientação", "Prof. Carla Souza", 2, 1, 1],
+  ["Desenvolvimento inteligente de produto", "Prof. Rafael Lima", 18, 10, 8],
+  ["Produção 4.0", "Prof. Marcos Silva", 16, 8, 8],
+  ["Aplicações com Inteligência Artificial", "Prof. Juliana Alves", 16, 10, 6],
+  ["Arduíno e Robótica", "Prof. Diego Santos", 24, 16, 8],
+  ["IOE em processos produtivos", "Prof. Ana Costa", 24, 12, 12],
+  ["Fuzzy logic with engineering applications", "Prof. Roberto Dias", 24, 12, 12],
+  ["Aprendizagem Baseada em Projetos I", "Prof. Carla Souza", 12, 6, 6],
+  ["Ferramentas Lean", "Prof. Marcos Silva", 20, 10, 10],
+  ["Otimização e melhoria de processos", "Prof. Rafael Lima", 20, 10, 10],
+  ["Programação da produção (PCP)", "Prof. Ana Costa", 16, 8, 8],
+  ["Modelagem e simulação de processos", "Prof. Roberto Dias", 20, 10, 10],
+  ["SCM - Supply Chain Management", "Prof. Juliana Alves", 16, 8, 8],
+  ["Aprendizagem Baseada em Projetos II", "Prof. Carla Souza", 12, 6, 6],
+  ["Análise de dados estatísticos", "Prof. Diego Santos", 24, 12, 12],
+  ["Business Intelligence e Analytics", "Prof. Marcos Silva", 20, 10, 10],
+  ["VTE orçamentária", "Prof. Rafael Lima", 20, 10, 10],
+  ["Law Tech (Direito e a Tecnologia)", "Prof. Juliana Alves", 20, 10, 10],
+  ["Revenue management", "Prof. Ana Costa", 20, 10, 10],
+  ["Aprendizagem Baseada em Projetos III", "Prof. Carla Souza", 12, 6, 6],
+  ["Projeto Final", "Prof. Roberto Dias", 4, 2, 2],
 ];
 
 function formatarData(data) {
@@ -114,7 +113,7 @@ function gerarCronograma() {
   tbody.innerHTML = "";
 
   disciplinas.forEach(disc => {
-    const diasDuracao = Math.ceil((disc[1] / horasSemanais) * 7);
+    const diasDuracao = Math.ceil((disc[2] / horasSemanais) * 7);
     const inicio = new Date(dataAtual);
     const fim = new Date(dataAtual);
     fim.setDate(fim.getDate() + diasDuracao);
@@ -122,7 +121,8 @@ function gerarCronograma() {
     tbody.innerHTML += `
       <tr>
         <td>${disc[0]}</td>
-        <td>${disc[2]}h (Síncrona) • ${disc[3]}h (Assíncrona) • ${disc[1]}h (Total)</td>
+        <td>${disc[1]}</td>
+        <td>${disc[3]}h (Síncrona) • ${disc[4]}h (Assíncrona) • ${disc[2]}h (Total)</td>
         <td>${diasDuracao} dias</td>
         <td>${formatarData(inicio)}</td>
         <td>${formatarData(fim)}</td>
