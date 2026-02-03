@@ -9,23 +9,51 @@
 
 <style>
   body { font-family: 'Inter', sans-serif; margin: 0; background: #f1f4f8; color: #2c3e50; }
+
   header { background: #003366; color: white; padding: 20px; text-align: center; }
   header h1 { margin: 0; font-weight: 600; letter-spacing: 1px; }
   header span { font-size: 14px; opacity: 0.8; }
+
   .container { max-width: 1100px; margin: 30px auto; padding: 20px; }
-  .card { background: white; padding: 25px; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.08); }
+
+  .card {
+    background: white; padding: 25px; border-radius: 12px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+  }
+
   label { font-weight: 600; font-size: 14px; }
-  input { width: 100%; padding: 10px; margin: 8px 0 15px; border-radius: 6px; border: 1px solid #ccc; font-size: 14px; }
+  input {
+    width: 100%; padding: 10px; margin: 8px 0 15px;
+    border-radius: 6px; border: 1px solid #ccc; font-size: 14px;
+  }
+
   .botoes { display: flex; gap: 10px; }
-  button { flex: 1; background: #ff6600; color: white; border: none; padding: 12px; font-weight: 600; border-radius: 6px; cursor: pointer; transition: 0.3s; }
+
+  button {
+    flex: 1;
+    background: #ff6600; color: white; border: none;
+    padding: 12px; font-weight: 600; border-radius: 6px;
+    cursor: pointer; transition: 0.3s;
+  }
+
   button:hover { background: #e65c00; }
+
   .btn-limpar { background: #7f8c8d; }
   .btn-limpar:hover { background: #636e72; }
-  table { width: 100%; border-collapse: collapse; margin-top: 25px; font-size: 14px; }
+
+  table {
+    width: 100%; border-collapse: collapse;
+    margin-top: 25px; font-size: 14px;
+  }
+
   th { background: #003366; color: white; padding: 12px; }
   td { padding: 10px; border-bottom: 1px solid #ddd; }
   tr:nth-child(even) { background: #f9fbfd; }
-  footer { text-align: center; margin-top: 40px; font-size: 13px; color: #555; }
+
+  footer {
+    text-align: center; margin-top: 40px;
+    font-size: 13px; color: #555;
+  }
 </style>
 </head>
 
@@ -54,9 +82,7 @@
       <thead>
         <tr>
           <th>Disciplina</th>
-          <th>Carga Síncrona</th>
-          <th>Carga Assíncrona</th>
-          <th>Carga Horária Total</th>
+          <th>Carga Horária</th>
           <th>Período proporcional (dias)</th>
           <th>Início</th>
           <th>Término</th>
@@ -75,27 +101,27 @@
 
 <script>
 const disciplinas = [
-  ["Ambientação", 2, 0, 2],
-  ["Desenvolvimento inteligente de produto", 6, 12, 18],
-  ["Produção 4.0", 6, 10, 16],
-  ["Aplicações com Inteligência Artificial", 6, 10, 16],
-  ["Arduíno e Robótica", 6, 18, 24],
-  ["IOE em processos produtivos", 06, 18, 24],
-  ["Fuzzy logic with engineering applications", 06, 18, 24],
-  ["Aprendizagem Baseada em Projetos I", 6, 6, 12],
-  ["Ferramentas Lean", 6, 14, 20],
-  ["Otimização e melhoria de processos", 6, 14, 20],
-  ["Programação da produção (PCP)", 6, 10, 16],
-  ["Modelagem e simulação de processos", 06, 14, 20],
-  ["SCM - Supply Chain Management", 06, 10, 16],
-  ["Aprendizagem Baseada em Projetos II", 6, 6, 12],
-  ["Análise de dados estatísticos", 06, 18, 24],
-  ["Business Intelligence e Analytics", 06, 14, 20],
-  ["VTE orçamentária", 6, 14, 20],
-  ["Law Tech (Direito e a Tecnologia)", 06, 14, 20],
-  ["Revenue management (gestão de oferta)", 06, 14, 20],
-  ["Aprendizagem Baseada em Projetos III", 6, 6, 12],
-  ["Projeto Final", 2, 2, 4],
+  ["Ambientação", 2],
+  ["Desenvolvimento inteligente de produto", 18],
+  ["Produção 4.0", 16],
+  ["Aplicações com Inteligência Artificial", 16],
+  ["Arduíno e Robótica", 24],
+  ["IOE em processos produtivos", 24],
+  ["Fuzzy logic with engineering applications", 24],
+  ["Aprendizagem Baseada em Projetos I", 12],
+  ["Ferramentas Lean", 20],
+  ["Otimização e melhoria de processos", 20],
+  ["Programação da produção (PCP)", 16],
+  ["Modelagem e simulação de processos", 20],
+  ["SCM - Supply Chain Management", 16],
+  ["Aprendizagem Baseada em Projetos II", 12],
+  ["Análise de dados estatísticos", 24],
+  ["Business Intelligence e Analytics", 20],
+  ["VTE orçamentária", 20],
+  ["Law Tech (Direito e a Tecnologia)", 20],
+  ["Revenue management (gestão de oferta)", 20],
+  ["Aprendizagem Baseada em Projetos III", 12],
+  ["Projeto Final", 4],
 ];
 
 function formatarData(data) {
@@ -116,17 +142,18 @@ function gerarCronograma() {
   tbody.innerHTML = "";
 
   disciplinas.forEach(disc => {
-    const diasDuracao = Math.ceil((disc[1] / horasSemanais) * 7);
+    const nome = disc[0];
+    const carga = disc[1];
+    const diasDuracao = Math.ceil((carga / horasSemanais) * 7);
+
     const inicio = new Date(dataAtual);
     const fim = new Date(dataAtual);
     fim.setDate(fim.getDate() + diasDuracao);
 
     tbody.innerHTML += `
       <tr>
-        <td>${disc[0]}</td>
-        <td>${disc[1]}h</td>
-        <td>${disc[2]}h</td>
-        <td>${disc[3]}h</td>
+        <td>${nome}</td>
+        <td>${carga}h</td>
         <td>${diasDuracao} dias</td>
         <td>${formatarData(inicio)}</td>
         <td>${formatarData(fim)}</td>
