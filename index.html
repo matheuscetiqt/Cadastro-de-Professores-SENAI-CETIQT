@@ -9,51 +9,24 @@
 
 <style>
   body { font-family: 'Inter', sans-serif; margin: 0; background: #f1f4f8; color: #2c3e50; }
-
   header { background: #003366; color: white; padding: 20px; text-align: center; }
   header h1 { margin: 0; font-weight: 600; letter-spacing: 1px; }
   header span { font-size: 14px; opacity: 0.8; }
-
   .container { max-width: 1100px; margin: 30px auto; padding: 20px; }
-
-  .card {
-    background: white; padding: 25px; border-radius: 12px;
-    box-shadow: 0 10px 25px rgba(0,0,0,0.08);
-  }
-
+  .card { background: white; padding: 25px; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.08); }
   label { font-weight: 600; font-size: 14px; }
-  input {
-    width: 100%; padding: 10px; margin: 8px 0 15px;
-    border-radius: 6px; border: 1px solid #ccc; font-size: 14px;
-  }
-
-  .botoes { display: flex; gap: 10px; }
-
-  button {
-    flex: 1;
-    background: #ff6600; color: white; border: none;
-    padding: 12px; font-weight: 600; border-radius: 6px;
-    cursor: pointer; transition: 0.3s;
-  }
-
+  input { width: 100%; padding: 10px; margin: 8px 0 15px; border-radius: 6px; border: 1px solid #ccc; font-size: 14px; }
+  .botoes { display: flex; gap: 10px; margin-bottom:10px; }
+  button { flex: 1; background: #ff6600; color: white; border: none; padding: 12px; font-weight: 600; border-radius: 6px; cursor: pointer; }
   button:hover { background: #e65c00; }
-
   .btn-limpar { background: #7f8c8d; }
   .btn-limpar:hover { background: #636e72; }
-
-  table {
-    width: 100%; border-collapse: collapse;
-    margin-top: 25px; font-size: 14px;
-  }
-
+  table { width: 100%; border-collapse: collapse; margin-top: 25px; font-size: 14px; }
   th { background: #003366; color: white; padding: 12px; }
   td { padding: 10px; border-bottom: 1px solid #ddd; }
   tr:nth-child(even) { background: #f9fbfd; }
-
-  footer {
-    text-align: center; margin-top: 40px;
-    font-size: 13px; color: #555;
-  }
+  tr.dragging { opacity: 0.5; }
+  footer { text-align: center; margin-top: 40px; font-size: 13px; color: #555; }
 </style>
 </head>
 
@@ -75,13 +48,16 @@
 
     <div class="botoes">
       <button onclick="gerarCronograma()">Gerar Cronograma</button>
+      <button onclick="atualizarDatas()">Atualizar Datas</button>
       <button class="btn-limpar" onclick="limparTabela()">Limpar</button>
     </div>
 
     <table id="tabela">
       <thead>
         <tr>
+          <th>Módulo</th>
           <th>Disciplina</th>
+          <th>Professor</th>
           <th>Carga Horária</th>
           <th>Período proporcional (dias)</th>
           <th>Início</th>
@@ -101,27 +77,27 @@
 
 <script>
 const disciplinas = [
-  ["Ambientação", 2],
-  ["Desenvolvimento inteligente de produto", 18],
-  ["Produção 4.0", 16],
-  ["Aplicações com Inteligência Artificial", 16],
-  ["Arduíno e Robótica", 24],
-  ["IOE em processos produtivos", 24],
-  ["Fuzzy logic with engineering applications", 24],
-  ["Aprendizagem Baseada em Projetos I", 12],
-  ["Ferramentas Lean", 20],
-  ["Otimização e melhoria de processos", 20],
-  ["Programação da produção (PCP)", 16],
-  ["Modelagem e simulação de processos", 20],
-  ["SCM - Supply Chain Management", 16],
-  ["Aprendizagem Baseada em Projetos II", 12],
-  ["Análise de dados estatísticos", 24],
-  ["Business Intelligence e Analytics", 20],
-  ["VTE orçamentária", 20],
-  ["Law Tech (Direito e a Tecnologia)", 20],
-  ["Revenue management (gestão de oferta)", 20],
-  ["Aprendizagem Baseada em Projetos III", 12],
-  ["Projeto Final", 4],
+  ["Módulo I","Ambientação","Prof. a definir",2],
+  ["Módulo I","Desenvolvimento inteligente de produto","Prof. a definir",18],
+  ["Módulo I","Produção 4.0","Prof. a definir",16],
+  ["Módulo I","Aplicações com Inteligência Artificial","Prof. a definir",16],
+  ["Módulo I","Arduíno e Robótica","Prof. a definir",24],
+  ["Módulo I","IOE em processos produtivos","Prof. a definir",24],
+  ["Módulo I","Fuzzy logic with engineering applications","Prof. a definir",24],
+  ["Módulo I","Aprendizagem Baseada em Projetos I","Prof. a definir",12],
+  ["Módulo II","Ferramentas Lean","Prof. a definir",20],
+  ["Módulo II","Otimização e melhoria de processos","Prof. a definir",20],
+  ["Módulo II","Programação da produção (PCP)","Prof. a definir",16],
+  ["Módulo II","Modelagem e simulação de processos","Prof. a definir",20],
+  ["Módulo II","SCM - Supply Chain Management","Prof. a definir",16],
+  ["Módulo II","Aprendizagem Baseada em Projetos II","Prof. a definir",12],
+  ["Módulo III","Análise de dados estatísticos","Prof. a definir",24],
+  ["Módulo III","Business Intelligence e Analytics","Prof. a definir",20],
+  ["Módulo III","VTE orçamentária","Prof. a definir",20],
+  ["Módulo III","Law Tech (Direito e a Tecnologia)","Prof. a definir",20],
+  ["Módulo III","Revenue management","Prof. a definir",20],
+  ["Módulo III","Aprendizagem Baseada em Projetos III","Prof. a definir",12],
+  ["Projeto Final","Projeto Final","Banca Avaliadora",4],
 ];
 
 function formatarData(data) {
@@ -131,35 +107,47 @@ function formatarData(data) {
 function gerarCronograma() {
   const horasSemanais = parseFloat(document.getElementById("horasSemanais").value);
   const dataInicioInput = document.getElementById("dataInicio").value;
-
-  if (!dataInicioInput) {
-    alert("Escolha a data de início!");
-    return;
-  }
+  if (!dataInicioInput) { alert("Escolha a data de início!"); return; }
 
   let dataAtual = new Date(dataInicioInput);
   const tbody = document.querySelector("#tabela tbody");
   tbody.innerHTML = "";
 
   disciplinas.forEach(disc => {
-    const nome = disc[0];
-    const carga = disc[1];
-    const diasDuracao = Math.ceil((carga / horasSemanais) * 7);
-
+    const diasDuracao = Math.ceil((disc[3] / horasSemanais) * 7);
     const inicio = new Date(dataAtual);
     const fim = new Date(dataAtual);
     fim.setDate(fim.getDate() + diasDuracao);
 
-    tbody.innerHTML += `
-      <tr>
-        <td>${nome}</td>
-        <td>${carga}h</td>
-        <td>${diasDuracao} dias</td>
-        <td>${formatarData(inicio)}</td>
-        <td>${formatarData(fim)}</td>
-      </tr>
+    const linha = document.createElement("tr");
+    linha.draggable = true;
+    linha.innerHTML = `
+        <td>${disc[0]}</td>
+        <td>${disc[1]}</td>
+        <td>${disc[2]}</td>
+        <td>${disc[3]}h</td>
+        <td>${diasDuracao}</td>
+        <td class="inicio">${formatarData(inicio)}</td>
+        <td class="fim">${formatarData(fim)}</td>
     `;
+    tbody.appendChild(linha);
+    dataAtual = fim;
+  });
 
+  ativarDragDrop();
+}
+
+function atualizarDatas() {
+  const horasSemanais = parseFloat(document.getElementById("horasSemanais").value);
+  let dataAtual = new Date(document.getElementById("dataInicio").value);
+  document.querySelectorAll("#tabela tbody tr").forEach(row => {
+    const carga = parseFloat(row.children[3].innerText);
+    const dias = Math.ceil((carga / horasSemanais) * 7);
+    const inicio = new Date(dataAtual);
+    const fim = new Date(dataAtual);
+    fim.setDate(fim.getDate() + dias);
+    row.children[5].innerText = formatarData(inicio);
+    row.children[6].innerText = formatarData(fim);
     dataAtual = fim;
   });
 }
@@ -167,6 +155,34 @@ function gerarCronograma() {
 function limparTabela() {
   document.querySelector("#tabela tbody").innerHTML = "";
   document.getElementById("dataInicio").value = "";
+}
+
+function ativarDragDrop() {
+  const rows = document.querySelectorAll("#tabela tbody tr");
+  rows.forEach(row => {
+    row.addEventListener("dragstart", () => row.classList.add("dragging"));
+    row.addEventListener("dragend", () => row.classList.remove("dragging"));
+  });
+
+  const tbody = document.querySelector("#tabela tbody");
+  tbody.addEventListener("dragover", e => {
+    e.preventDefault();
+    const dragging = document.querySelector(".dragging");
+    const afterElement = getDragAfterElement(tbody, e.clientY);
+    if (afterElement == null) tbody.appendChild(dragging);
+    else tbody.insertBefore(dragging, afterElement);
+  });
+}
+
+function getDragAfterElement(container, y) {
+  const els = [...container.querySelectorAll("tr:not(.dragging)")];
+  return els.reduce((closest, child) => {
+    const box = child.getBoundingClientRect();
+    const offset = y - box.top - box.height / 2;
+    if (offset < 0 && offset > closest.offset) {
+      return { offset: offset, element: child };
+    } else return closest;
+  }, { offset: Number.NEGATIVE_INFINITY }).element;
 }
 </script>
 
