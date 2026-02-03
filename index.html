@@ -1,173 +1,172 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Cronograma Acadêmico • SENAI CETIQT</title>
-
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
-
+<meta charset="UTF-8">
+<title>Cronograma Acadêmico</title>
 <style>
-  body { font-family: 'Inter', sans-serif; margin: 0; background: #f1f4f8; color: #2c3e50; }
-
-  header { background: #003366; color: white; padding: 20px; text-align: center; }
-  header h1 { margin: 0; font-weight: 600; letter-spacing: 1px; }
-  header span { font-size: 14px; opacity: 0.8; }
-
-  .container { max-width: 1100px; margin: 30px auto; padding: 20px; }
-
-  .card {
-    background: white; padding: 25px; border-radius: 12px;
-    box-shadow: 0 10px 25px rgba(0,0,0,0.08);
-  }
-
-  label { font-weight: 600; font-size: 14px; }
-  input {
-    width: 100%; padding: 10px; margin: 8px 0 15px;
-    border-radius: 6px; border: 1px solid #ccc; font-size: 14px;
-  }
-
-  .botoes { display: flex; gap: 10px; }
-
-  button {
-    flex: 1;
-    background: #ff6600; color: white; border: none;
-    padding: 12px; font-weight: 600; border-radius: 6px;
-    cursor: pointer; transition: 0.3s;
-  }
-
-  button:hover { background: #e65c00; }
-
-  .btn-limpar { background: #7f8c8d; }
-  .btn-limpar:hover { background: #636e72; }
-
-  table {
-    width: 100%; border-collapse: collapse;
-    margin-top: 25px; font-size: 14px;
-  }
-
-  th { background: #003366; color: white; padding: 12px; }
-  td { padding: 10px; border-bottom: 1px solid #ddd; }
-  tr:nth-child(even) { background: #f9fbfd; }
-
-  footer {
-    text-align: center; margin-top: 40px;
-    font-size: 13px; color: #555;
-  }
+    body{
+        font-family: Arial, Helvetica, sans-serif;
+        background:#f4f6f9;
+        margin:0;
+        padding:0;
+    }
+    header{
+        background:#00205B;
+        color:white;
+        padding:20px;
+        text-align:center;
+        font-size:22px;
+        font-weight:bold;
+        letter-spacing:1px;
+    }
+    .autor{
+        text-align:center;
+        font-size:13px;
+        margin-top:4px;
+        opacity:0.8;
+    }
+    .container{
+        width:95%;
+        max-width:1200px;
+        margin:30px auto;
+        background:white;
+        padding:25px;
+        border-radius:10px;
+        box-shadow:0 4px 12px rgba(0,0,0,0.08);
+    }
+    input, button{
+        padding:10px;
+        margin:8px 5px;
+        border-radius:6px;
+        border:1px solid #ccc;
+        font-size:14px;
+    }
+    button{
+        background:#00205B;
+        color:white;
+        cursor:pointer;
+        border:none;
+    }
+    button:hover{
+        background:#003b9e;
+    }
+    table{
+        width:100%;
+        border-collapse:collapse;
+        margin-top:20px;
+    }
+    th{
+        background:#00205B;
+        color:white;
+        padding:10px;
+        font-size:14px;
+    }
+    td{
+        padding:8px;
+        border-bottom:1px solid #ddd;
+        font-size:13px;
+        text-align:center;
+    }
+    tr:hover{
+        background:#f1f1f1;
+    }
 </style>
 </head>
 
 <body>
 
 <header>
-  <h1>SENAI CETIQT</h1>
-  <span>Cronograma Acadêmico do Curso</span>
+    SENAI CETIQT — Planejamento Acadêmico
+    <div class="autor">Sistema desenvolvido por Matheus Damica Rodrigues Conceição</div>
 </header>
 
 <div class="container">
-  <div class="card">
 
-    <label>Data de início do curso</label>
-    <input type="date" id="dataInicio">
+<label>Data de início do curso:</label>
+<input type="date" id="dataInicio">
 
-    <label>Horas de estudo por semana</label>
-    <input type="number" id="horasSemanais" value="8">
+<label>Horas semanais:</label>
+<input type="number" id="horasSemanais" value="8">
 
-    <div class="botoes">
-      <button onclick="gerarCronograma()">Gerar Cronograma</button>
-      <button class="btn-limpar" onclick="limparTabela()">Limpar</button>
-    </div>
+<button onclick="gerarCronograma()">Gerar Cronograma</button>
+<button onclick="limparTabela()">Limpar</button>
 
-    <table id="tabela">
-      <thead>
+<table id="tabela">
+    <thead>
         <tr>
-          <th>Disciplina</th>
-          <th>Carga Horária</th>
-          <th>Período proporcional (dias)</th>
-          <th>Início</th>
-          <th>Término</th>
+            <th>Módulo</th>
+            <th>Disciplina</th>
+            <th>Professor</th>
+            <th>Carga Horária</th>
+            <th>Período proporcional (dias)</th>
+            <th>Início</th>
+            <th>Término</th>
         </tr>
-      </thead>
-      <tbody></tbody>
-    </table>
+    </thead>
+    <tbody></tbody>
+</table>
 
-  </div>
 </div>
 
-<footer>
-  Sistema de Planejamento Acadêmico • SENAI CETIQT <br>
-  Desenvolvido por <strong>Matheus Damica Rodrigues Conceição</strong>
-</footer>
-
 <script>
+
 const disciplinas = [
-  ["Ambientação", 2],
-  ["Desenvolvimento inteligente de produto", 18],
-  ["Produção 4.0", 16],
-  ["Aplicações com Inteligência Artificial", 16],
-  ["Arduíno e Robótica", 24],
-  ["IOE em processos produtivos", 24],
-  ["Fuzzy logic with engineering applications", 24],
-  ["Aprendizagem Baseada em Projetos I", 12],
-  ["Ferramentas Lean", 20],
-  ["Otimização e melhoria de processos", 20],
-  ["Programação da produção (PCP)", 16],
-  ["Modelagem e simulação de processos", 20],
-  ["SCM - Supply Chain Management", 16],
-  ["Aprendizagem Baseada em Projetos II", 12],
-  ["Análise de dados estatísticos", 24],
-  ["Business Intelligence e Analytics", 20],
-  ["VTE orçamentária", 20],
-  ["Law Tech (Direito e a Tecnologia)", 20],
-  ["Revenue management (gestão de oferta)", 20],
-  ["Aprendizagem Baseada em Projetos III", 12],
-  ["Projeto Final", 4],
+{modulo:"Módulo 1", nome:"Ambientação", ch:20, prof:"Prof. Carlos"},
+{modulo:"Módulo 1", nome:"Desenvolvimento inteligente de produto", ch:30, prof:"Prof. Mariana"},
+{modulo:"Módulo 1", nome:"Produção 4.0", ch:30, prof:"Prof. Rafael"},
+{modulo:"Módulo 2", nome:"Aplicações com Inteligência Artificial", ch:40, prof:"Prof. Juliana"},
+{modulo:"Módulo 2", nome:"Arduíno e Robótica", ch:30, prof:"Prof. Bruno"},
+{modulo:"Módulo 2", nome:"IOE em processos produtivos", ch:20, prof:"Prof. Diego"},
+{modulo:"Módulo 3", nome:"Fuzzy logic with engineering applications", ch:20, prof:"Prof. Fernanda"},
+{modulo:"Módulo 3", nome:"Aprendizagem Baseada em Projetos I", ch:20, prof:"Prof. Ricardo"},
+{modulo:"Módulo 3", nome:"Ferramentas Lean", ch:20, prof:"Prof. Paula"},
+{modulo:"Módulo 4", nome:"Otimização e melhoria de processos", ch:20, prof:"Prof. Marcelo"},
+{modulo:"Módulo 4", nome:"Programação da produção (PCP)", ch:20, prof:"Prof. Aline"},
+{modulo:"Módulo 4", nome:"Modelagem e simulação de processos", ch:20, prof:"Prof. Renato"},
+{modulo:"Módulo 5", nome:"SCM - Supply Chain Management", ch:20, prof:"Prof. Simone"},
+{modulo:"Módulo 5", nome:"Aprendizagem Baseada em Projetos II", ch:20, prof:"Prof. Victor"},
+{modulo:"Módulo 5", nome:"Análise de dados estatísticos", ch:20, prof:"Prof. Eduardo"},
+{modulo:"Módulo 6", nome:"Business Intelligence e Analytics", ch:20, prof:"Prof. Patricia"},
+{modulo:"Módulo 6", nome:"VTE orçamentária", ch:20, prof:"Prof. Gustavo"},
+{modulo:"Módulo 6", nome:"Law Tech (Direito e a Tecnologia)", ch:20, prof:"Prof. Helena"},
+{modulo:"Módulo 7", nome:"Revenue management", ch:20, prof:"Prof. Thiago"},
+{modulo:"Módulo 7", nome:"Aprendizagem Baseada em Projetos III", ch:20, prof:"Prof. Roberta"},
+{modulo:"Módulo 7", nome:"Projeto Final", ch:20, prof:"Prof. Coordenador"}
 ];
 
-function formatarData(data) {
-  return data.toLocaleDateString('pt-BR');
+function gerarCronograma(){
+    const inicioCurso = new Date(document.getElementById("dataInicio").value);
+    const horasSemanais = parseFloat(document.getElementById("horasSemanais").value);
+    const tbody = document.querySelector("#tabela tbody");
+    tbody.innerHTML = "";
+
+    let dataAtual = new Date(inicioCurso);
+
+    disciplinas.forEach(disc => {
+        const diasDuracao = Math.ceil((disc.ch / horasSemanais) * 7);
+        const dataFim = new Date(dataAtual);
+        dataFim.setDate(dataAtual.getDate() + diasDuracao);
+
+        const linha = `
+            <tr>
+                <td>${disc.modulo}</td>
+                <td>${disc.nome}</td>
+                <td>${disc.prof}</td>
+                <td>${disc.ch}h</td>
+                <td>${diasDuracao} dias</td>
+                <td>${dataAtual.toLocaleDateString()}</td>
+                <td>${dataFim.toLocaleDateString()}</td>
+            </tr>
+        `;
+        tbody.innerHTML += linha;
+        dataAtual = new Date(dataFim);
+    });
 }
 
-function gerarCronograma() {
-  const horasSemanais = parseFloat(document.getElementById("horasSemanais").value);
-  const dataInicioInput = document.getElementById("dataInicio").value;
-
-  if (!dataInicioInput) {
-    alert("Escolha a data de início!");
-    return;
-  }
-
-  let dataAtual = new Date(dataInicioInput);
-  const tbody = document.querySelector("#tabela tbody");
-  tbody.innerHTML = "";
-
-  disciplinas.forEach(disc => {
-    const nome = disc[0];
-    const carga = disc[1];
-    const diasDuracao = Math.ceil((carga / horasSemanais) * 7);
-
-    const inicio = new Date(dataAtual);
-    const fim = new Date(dataAtual);
-    fim.setDate(fim.getDate() + diasDuracao);
-
-    tbody.innerHTML += `
-      <tr>
-        <td>${nome}</td>
-        <td>${carga}h</td>
-        <td>${diasDuracao} dias</td>
-        <td>${formatarData(inicio)}</td>
-        <td>${formatarData(fim)}</td>
-      </tr>
-    `;
-
-    dataAtual = fim;
-  });
+function limparTabela(){
+    document.querySelector("#tabela tbody").innerHTML = "";
 }
 
-function limparTabela() {
-  document.querySelector("#tabela tbody").innerHTML = "";
-  document.getElementById("dataInicio").value = "";
-}
 </script>
 
 </body>
