@@ -15,30 +15,30 @@
 </head>
 <body>
 
-  <h1>📚 Gerador de Cronograma de Curso</h1>
+<h1>📚 Gerador de Cronograma de Curso</h1>
 
-  <div class="box">
-    <label>Data de início:</label><br>
-    <input type="date" id="dataInicio"><br>
+<div class="box">
+  <label>Data de início do curso:</label><br>
+  <input type="date" id="dataInicio"><br>
 
-    <label>Horas por semana:</label><br>
-    <input type="number" id="horasSemanais" value="8"><br>
+  <label>Horas de estudo por semana:</label><br>
+  <input type="number" id="horasSemanais" value="8"><br>
 
-    <button onclick="gerarCronograma()">Gerar Cronograma</button>
+  <button onclick="gerarCronograma()">Gerar Cronograma</button>
 
-    <table id="tabela">
-      <thead>
-        <tr>
-          <th>Disciplina</th>
-          <th>Carga Horária</th>
-          <th>Semanas</th>
-          <th>Início</th>
-          <th>Término</th>
-        </tr>
-      </thead>
-      <tbody></tbody>
-    </table>
-  </div>
+  <table id="tabela">
+    <thead>
+      <tr>
+        <th>Disciplina</th>
+        <th>Carga Horária</th>
+        <th>Duração (dias)</th>
+        <th>Início</th>
+        <th>Término</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+</div>
 
 <script>
 const disciplinas = [
@@ -86,18 +86,18 @@ function gerarCronograma() {
     const nome = disc[0];
     const carga = disc[1];
 
-    const semanas = carga / horasSemanais;
-    const dias = semanas * 7;
+    // ✅ CÁLCULO OFICIAL EM DIAS CHEIOS
+    const diasDuracao = Math.ceil((carga / horasSemanais) * 7);
 
     const inicio = new Date(dataAtual);
     const fim = new Date(dataAtual);
-    fim.setDate(fim.getDate() + dias);
+    fim.setDate(fim.getDate() + diasDuracao);
 
     const linha = `
       <tr>
         <td>${nome}</td>
         <td>${carga}h</td>
-        <td>${semanas.toFixed(2)}</td>
+        <td>${diasDuracao} dias</td>
         <td>${formatarData(inicio)}</td>
         <td>${formatarData(fim)}</td>
       </tr>
