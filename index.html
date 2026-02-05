@@ -22,7 +22,6 @@
   .btn-limpar { background: #7f8c8d; }
   .btn-excel { background: #1d6f42; }
   .btn-excel:hover { background: #155c36; }
-
   .btn-voltar { background: #003366; }
   .btn-voltar:hover { background: #00264d; }
 
@@ -37,7 +36,7 @@
 
 <header>
   <h1>SENAI CETIQT</h1>
-  <span>Produção Industrial Inteligente</span>
+  <span>Moda Praia e Esportiva</span>
 </header>
 
 <div class="container">
@@ -80,27 +79,26 @@
 
 <script>
 const disciplinas = [
-  ["Ambientação", "Prof. Jose Marcelo Palma", 2, 2, 0],
-  ["Desenvolvimento inteligente de produto", "Sérgio Baltar", 18, 8, 10],
-  ["Produção 4.0", "Prof. Luis Moura", 16, 8, 8],
-  ["Arduíno e Robótica", "Prof. Vinicius Aguiar", 20, 8, 12],
-  ["Aplicações com Inteligência Artificial", "Prof. Luis Moura", 24, 8, 16],
-  ["IOE em processos produtivos", "Prof. Luis Moura", 24, 8, 16],
-  ["Fuzzy logic with engineering applications", "Prof. Carlos Navarro", 24, 8, 16],
-  ["Aprendizagem Baseada em Projetos I", "Prof. Jose Marcelo Palma", 8, 8, 0],
-  ["Ferramentas Lean", "Prof. Aluisio Monteiro", 20, 8, 12],
-  ["Otimização e melhoria de processos", "Prof. Aluisio Monteiro", 20, 8, 12],
-  ["Modelagem e simulação de processos", "Prof. Raphael Costa", 20, 8, 12],
-  ["Programação da produção (PCP)", "Prof. Aluisio Monteiro", 18, 8, 10],
-  ["SCM - Supply Chain Management", "Prof. Manuel Lemos", 18, 8, 10],
-  ["Aprendizagem Baseada em Projetos II", "Prof. Jose Marcelo Palma", 8, 8, 0],
-  ["Análise de dados estatísticos", "Prof. Raphael Costa", 24, 8, 16],
-  ["Business Intelligence e Analytics", "Prof. Walner Passos", 20, 8, 12],
-  ["VTE orçamentária", "Prof. Frederyck Teixeira", 20, 8, 12],
-  ["Law Tech (Direito e a Tecnologia)", "Prof. Diogo Mello", 20, 8, 12],
-  ["Revenue management", "Prof. Luis Moura", 20, 8, 12],
-  ["Aprendizagem Baseada em Projetos III", "Prof. Jose Marcelo Palma", 8, 8, 0],
-  ["Projeto Final", "Prof. Jose Marcelo Palma", 8, 0, 8],
+  ["Mercado de moda praia e esportiva", "Rosanna Naccarato", 16, 4, 12],
+  ["Economia criativa e modelo de negócios", "Luísa Meirelles", 12, 6, 6],
+  ["Ergonomia e antropometria mundial", "Cristiane Santos", 12, 6, 6],
+  ["Interpretação do desenho técnico", "Diva Costa", 12, 6, 6],
+  ["Ciência e tecnologia dos materiais têxteis", "Fabio Lacerda e Tatiana Laschuk", 12, 6, 6],
+  ["Gestão e qualidade", "Roberta Raposo", 12, 6, 6],
+  ["Exportação: conhecimento de normas técnicas", "Maira Poci", 10, 4, 6],
+  ["Acabamentos em têxteis elásticos", "Barbara Poci", 14, 8, 6],
+  ["Avaliação do módulo de cenário mercadológico", "Barbara Poci", 4, 4, 0],
+  ["Modelagem esportiva: masculina e feminina", "Barbara Poci", 30, 12, 18],
+  ["Software de modelagem I", "Heide Casagrande e Giselly Caldeira", 42, 18, 24],
+  ["Modelagem esportiva: plus size", "Danielle Beduschi", 30, 12, 18],
+  ["Avaliação do módulo de moda esportiva", "Barbara Poci", 4, 4, 0],
+  ["Modelagem de moda praia: plus size", "Danielle Beduschi", 20, 8, 12],
+  ["Modelagem de moda praia: masculina e feminina", "Barbara Poci", 42, 18, 24],
+  ["Software de modelagem II", "Heide Casagrande e Giselly Caldeira", 14, 8, 6],
+  ["Modelagem de moda praia: infantil", "Barbara Poci", 20, 8, 12],
+  ["Modelagem de moda praia de luxo", "Barbara Poci", 20, 8, 12],
+  ["Modelagem de moda pós praia", "Marilene Rocha", 16, 8, 8],
+  ["Avaliação do módulo de moda praia", "Barbara Poci", 4, 4, 0],
 ];
 
 function formatarData(data) {
@@ -138,7 +136,7 @@ function gerarCronograma() {
       </tr>
     `;
 
-    // 🔥 INTERVALO DE 1 DIA ENTRE DISCIPLINAS
+    // intervalo de 1 dia entre disciplinas
     dataAtual = new Date(fim);
     dataAtual.setDate(dataAtual.getDate() + 1);
   });
