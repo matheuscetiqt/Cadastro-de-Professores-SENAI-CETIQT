@@ -29,6 +29,16 @@
   th { background: #003366; color: white; padding: 12px; }
   td { padding: 10px; border-bottom: 1px solid #ddd; }
   tr:nth-child(even) { background: #f9fbfd; }
+
+  /* 🔵 BLOCO DE RESUMO DO CURSO */
+  .resumo {
+    background: #eaf3ff;
+    border-left: 6px solid #003366;
+    padding: 15px;
+    margin-top: 20px;
+    border-radius: 8px;
+    font-weight: 600;
+  }
 </style>
 </head>
 
@@ -55,6 +65,12 @@
       <button class="btn-voltar" onclick="voltarPagina()">Voltar à Página Inicial</button>
     </div>
 
+    <!-- 🔵 RESUMO AUTOMÁTICO -->
+    <div id="resumoCurso" class="resumo" style="display:none;">
+      📅 Previsão de encerramento do curso: <span id="dataFinal"></span><br>
+      ⏳ Duração total: <span id="duracaoTotal"></span> meses
+    </div>
+
     <table id="tabela">
       <thead>
         <tr>
@@ -78,28 +94,7 @@
 </footer>
 
 <script>
-const disciplinas = [
-  ["Mercado de moda praia e esportiva", "Rosanna Naccarato", 16, 4, 12],
-  ["Economia criativa e modelo de negócios", "Luísa Meirelles", 12, 6, 6],
-  ["Ergonomia e antropometria mundial", "Cristiane Santos", 12, 6, 6],
-  ["Interpretação do desenho técnico", "Diva Costa", 12, 6, 6],
-  ["Ciência e tecnologia dos materiais têxteis", "Fabio Lacerda e Tatiana Laschuk", 12, 6, 6],
-  ["Gestão e qualidade", "Roberta Raposo", 12, 6, 6],
-  ["Exportação: conhecimento de normas técnicas", "Maira Poci", 10, 4, 6],
-  ["Acabamentos em têxteis elásticos", "Barbara Poci", 14, 8, 6],
-  ["Avaliação do módulo de cenário mercadológico", "Barbara Poci", 4, 4, 0],
-  ["Modelagem esportiva: masculina e feminina", "Barbara Poci", 30, 12, 18],
-  ["Software de modelagem I", "Heide Casagrande e Giselly Caldeira", 42, 18, 24],
-  ["Modelagem esportiva: plus size", "Danielle Beduschi", 30, 12, 18],
-  ["Avaliação do módulo de moda esportiva", "Barbara Poci", 4, 4, 0],
-  ["Modelagem de moda praia: plus size", "Danielle Beduschi", 20, 8, 12],
-  ["Modelagem de moda praia: masculina e feminina", "Barbara Poci", 42, 18, 24],
-  ["Software de modelagem II", "Heide Casagrande e Giselly Caldeira", 14, 8, 6],
-  ["Modelagem de moda praia: infantil", "Barbara Poci", 20, 8, 12],
-  ["Modelagem de moda praia de luxo", "Barbara Poci", 20, 8, 12],
-  ["Modelagem de moda pós praia", "Marilene Rocha", 16, 8, 8],
-  ["Avaliação do módulo de moda praia", "Barbara Poci", 4, 4, 0],
-];
+const disciplinas = [ /* sua lista continua igual aqui */ ];
 
 function formatarData(data) {
   return data.toLocaleDateString('pt-BR');
@@ -115,12 +110,12 @@ function gerarCronograma() {
   }
 
   let dataAtual = new Date(dataInicioInput);
+  const dataInicioCurso = new Date(dataInicioInput);
   const tbody = document.querySelector("#tabela tbody");
   tbody.innerHTML = "";
 
   disciplinas.forEach(disc => {
     const diasDuracao = Math.ceil((disc[2] / horasSemanais) * 7);
-
     const inicio = new Date(dataAtual);
     const fim = new Date(dataAtual);
     fim.setDate(fim.getDate() + diasDuracao);
@@ -136,10 +131,18 @@ function gerarCronograma() {
       </tr>
     `;
 
-    // intervalo de 1 dia entre disciplinas
     dataAtual = new Date(fim);
     dataAtual.setDate(dataAtual.getDate() + 1);
   });
+
+  // 🔵 CÁLCULO FINAL DO CURSO
+  const dataFinalCurso = new Date(dataAtual);
+  const diffMeses = ((dataFinalCurso.getFullYear() - dataInicioCurso.getFullYear()) * 12) +
+                    (dataFinalCurso.getMonth() - dataInicioCurso.getMonth());
+
+  document.getElementById("dataFinal").innerText = formatarData(dataFinalCurso);
+  document.getElementById("duracaoTotal").innerText = diffMeses;
+  document.getElementById("resumoCurso").style.display = "block";
 }
 
 function exportarExcel() {
@@ -156,6 +159,7 @@ function exportarExcel() {
 function limparTabela() {
   document.querySelector("#tabela tbody").innerHTML = "";
   document.getElementById("dataInicio").value = "";
+  document.getElementById("resumoCurso").style.display = "none";
 }
 
 function voltarPagina() {
