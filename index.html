@@ -25,14 +25,6 @@
   .btn-voltar { background: #003366; }
   .btn-voltar:hover { background: #00264d; }
 
-  .resumo-curso {
-    margin-top: 20px;
-    padding: 12px;
-    background: #eef3f9;
-    border-radius: 8px;
-    font-weight: 600;
-  }
-
   table { width: 100%; border-collapse: collapse; margin-top: 25px; font-size: 14px; }
   th { background: #003366; color: white; padding: 12px; }
   td { padding: 10px; border-bottom: 1px solid #ddd; }
@@ -62,9 +54,6 @@
       <button class="btn-excel" onclick="exportarExcel()">Exportar para Excel</button>
       <button class="btn-voltar" onclick="voltarPagina()">Voltar à Página Inicial</button>
     </div>
-
-    <!-- 🔵 RESUMO DO CURSO (ADICIONADO AQUI) -->
-    <div id="resumoCurso" class="resumo-curso"></div>
 
     <table id="tabela">
       <thead>
@@ -111,7 +100,6 @@ const disciplinas = [
   ["Revenue management", "Prof. Luis Moura", 20, 8, 12],
   ["Aprendizagem Baseada em Projetos III", "Prof. Jose Marcelo Palma", 8, 8, 0],
   ["Projeto Final", "Prof. Jose Marcelo Palma", 8, 0, 8],
-];
 
 function formatarData(data) {
   return data.toLocaleDateString('pt-BR');
@@ -121,19 +109,18 @@ function gerarCronograma() {
   const horasSemanais = parseFloat(document.getElementById("horasSemanais").value);
   const dataInicioInput = document.getElementById("dataInicio").value;
 
-  if (!dataInicioInput || horasSemanais <= 0) {
-    alert("Preencha a data e as horas semanais corretamente!");
+  if (!dataInicioInput) {
+    alert("Escolha a data de início!");
     return;
   }
 
   let dataAtual = new Date(dataInicioInput);
-  const dataInicioCurso = new Date(dataInicioInput);
-
   const tbody = document.querySelector("#tabela tbody");
   tbody.innerHTML = "";
 
   disciplinas.forEach(disc => {
     const diasDuracao = Math.ceil((disc[2] / horasSemanais) * 7);
+
     const inicio = new Date(dataAtual);
     const fim = new Date(dataAtual);
     fim.setDate(fim.getDate() + diasDuracao);
@@ -149,18 +136,10 @@ function gerarCronograma() {
       </tr>
     `;
 
-    dataAtual = fim;
+    // 🔥 INTERVALO DE 1 DIA ENTRE DISCIPLINAS
+    dataAtual = new Date(fim);
+    dataAtual.setDate(dataAtual.getDate() + 1);
   });
-
-  // 🔵 CÁLCULO FINAL DO CURSO
-  const dataFinalCurso = new Date(dataAtual);
-  const diffMeses = ((dataFinalCurso.getFullYear() - dataInicioCurso.getFullYear()) * 12) +
-                    (dataFinalCurso.getMonth() - dataInicioCurso.getMonth());
-
-  document.getElementById("resumoCurso").innerHTML = `
-    📅 Previsão de encerramento do curso: ${formatarData(dataFinalCurso)} <br>
-    🟦 Duração total: ${diffMeses} meses
-  `;
 }
 
 function exportarExcel() {
@@ -177,7 +156,6 @@ function exportarExcel() {
 function limparTabela() {
   document.querySelector("#tabela tbody").innerHTML = "";
   document.getElementById("dataInicio").value = "";
-  document.getElementById("resumoCurso").innerHTML = "";
 }
 
 function voltarPagina() {
